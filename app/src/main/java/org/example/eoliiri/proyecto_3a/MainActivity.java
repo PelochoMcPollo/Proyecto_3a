@@ -10,6 +10,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Debug;
@@ -36,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
@@ -332,4 +332,7 @@ public class MainActivity extends AppCompatActivity {
         // Otras líneas 'case' para verificar otros permisos que la aplicación podría solicitar.
     } // ()
 
+    public void lanzarLogin(View view) {
+        startActivity(new Intent(this, LoginActivity.class));
+    }
 }
