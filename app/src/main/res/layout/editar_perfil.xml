@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_pass"
+        android:id="@+id/til_clave"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -19,10 +19,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/correo"
+            android:id="@+id/correol"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Correo electrónico"
+            android:hint="Hola"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
             android:textSize="20sp" />
