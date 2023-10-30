@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.editar_perfil);
+        setContentView(R.layout.activity_main);
 
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
         requestQueue = Volley.newRequestQueue(this);
