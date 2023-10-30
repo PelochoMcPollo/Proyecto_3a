@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.editar_perfil);
 
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
         requestQueue = Volley.newRequestQueue(this);
@@ -310,8 +310,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, "onCreate(): termina");
 
         // Asigna los TextView de la interfaz a las variables co2 y temp.
-        co2 = findViewById(R.id.CO2);
-        temp = findViewById(R.id.Temp);
     } // onCreate()
 
     // Método llamado cuando se otorgan o deniegan permisos solicitados por la aplicación.
