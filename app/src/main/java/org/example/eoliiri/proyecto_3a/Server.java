@@ -28,8 +28,14 @@ public class Server {
     private static final String Url1 = "http://192.168.148.194/proyecto_3a/src/api/guardarprueba.php";
     private static final String UrlRecuperarUsuario = "http://192.168.148.194/proyecto_3a/src/api/recuperarusuario.php?email=pepe@gmail.com";
     private static final String  UrlRecuperarTelefono = "http://192.168.148.194/proyecto_3a/src/api/recuperartelefono.php?email=pepe@gmail.com";
+    private  static  final  String UrlActualizarUsuario = "http://192.168.148.194/proyecto_3a/src/api/actualizarusuario.php?email=pepe@gmail.com";
+    private  static  final  String UrlActualizarTelefono = "http://192.168.148.194/proyecto_3a/src/api/actualizartelefono.php?email=pepe@gmail.com";
 
-    private static String nombre,contrasenya,telefono;
+    private static String nombre,contrasenya,telefono,email;
+
+    private  static  UsuarioRecuperadoListener usuarioRecuperadoListener;
+    private  static  TelefonoRecuperadoListener telefonoRecuperadoListener;
+
 
 
 
@@ -45,10 +51,10 @@ public class Server {
      * @param tempbd        Temperatura a enviar al servidor.
      * @param requestQueue  Cola de solicitudes Volley para gestionar la comunicación en red.
      */
-    public static void crearPrueba(final String co2bd, final String tempbd , RequestQueue requestQueue) {
+    public  static void crearPrueba(final String co2bd, final String tempbd , RequestQueue requestQueue) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,    // Método HTTP (POST).
-                Url1,                   // URL del servidor.
+                Url1,                // URL del servidor.
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -77,8 +83,16 @@ public class Server {
     }
 
 
+    /**
+     *
+     *   -------------------------------------------------------------------------
+     *    requestQueue --> recuperarUsuario() --> [nombre:text, contrasenya:text]
+     *   -------------------------------------------------------------------------
+     *
+     * @param requestQueue
+     */
 
-    public static void recuperarUsuario(RequestQueue requestQueue, TextInputEditText nombrei, TextInputEditText contrasenyai) {
+    public static void recuperarUsuario(RequestQueue requestQueue) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,    // Método HTTP (POST).
                 UrlRecuperarUsuario,                   // URL del servidor.
@@ -90,8 +104,12 @@ public class Server {
                         {
                             nombre = response.getString("nombreyapellidos");
                             contrasenya = response.getString("contrasenya");
-                            nombrei.setText(nombre);
-                            contrasenyai.setText(contrasenya);
+                            email = response.getString("email");
+
+                            if (usuarioRecuperadoListener != null) {
+                                usuarioRecuperadoListener.onUsuarioRecuperado();
+                            }
+
 
                         }
                         catch (JSONException e)
@@ -111,7 +129,16 @@ public class Server {
 
     }
 
-    public static void recuperarTelefono(RequestQueue requestQueue, TextInputEditText telefonoi) {
+    /**
+     *
+     *   -------------------------------------------------------------------------
+     *    requestQueue --> recuperarTelefono() --> [telefono:R]
+     *   -------------------------------------------------------------------------
+     *
+     * @param requestQueue
+     */
+
+    public static void recuperarTelefono(RequestQueue requestQueue) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,    // Método HTTP (POST).
                 UrlRecuperarTelefono,                   // URL del servidor.
@@ -122,8 +149,10 @@ public class Server {
                         try
                         {
                             telefono = response.getString("telefono");
-                            telefonoi.setText(telefono);
-
+                            if(telefonoRecuperadoListener != null)
+                            {
+                                telefonoRecuperadoListener.onTelefonoRecuperado();
+                            }
                         }
                         catch (JSONException e)
                         {
@@ -141,6 +170,127 @@ public class Server {
         requestQueue.add(jsonObjectRequest);
 
     }
+
+    /**
+     *
+     *   -------------------------------------------------------------------------
+     *    requestQueue, nombre:text, contrasenya:text --> actualizarusuario()
+     *   -------------------------------------------------------------------------
+     *
+     * @param requestQueue
+     * @param nombreg
+     * @param contrasenyag
+     */
+
+    public static void actualizarusuario(RequestQueue requestQueue ,final String nombreg, final String contrasenyag, final String emailg)
+    {
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,    // Método HTTP (POST).
+                UrlActualizarUsuario,                   // URL del servidor.
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Pelochas","Actualizado");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Pelochas", error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map <String, String> params = new HashMap<>();
+                params.put("email",emailg);
+                params.put("emailantiguo","pepe@gmail.com");
+                params.put("nombreyapellidos",nombreg);
+                params.put("contrasenya",contrasenyag);
+                return params;
+            }
+        };
+        // Se agrega la solicitud a la cola de solicitudes para su procesamiento.
+        requestQueue.add(stringRequest);
+    }
+
+
+    /**
+     *
+     *   -------------------------------------------------------------------------
+     *    requestQueue, telefono:text --> actualizatelefono()
+     *   -------------------------------------------------------------------------
+     *
+     * @param requestQueue
+     * @param telefono
+     */
+
+    public static void actualizarTelefono(RequestQueue requestQueue ,final String telefono)
+    {
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,    // Método HTTP (POST).
+                UrlActualizarTelefono,                   // URL del servidor.
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Pelochas","Actualizado");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Pelochas", error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map <String, String> params = new HashMap<>();
+                params.put("email","pepe@gmail.com");
+                params.put("telefono",telefono);
+                return params;
+            }
+        };
+        // Se agrega la solicitud a la cola de solicitudes para su procesamiento.
+        requestQueue.add(stringRequest);
+    }
+
+    public static void modificarTextos(RequestQueue requestQueue,TextInputEditText nombrei, TextInputEditText contrasenyai , TextInputEditText telefonoi, TextInputEditText emaili)
+    {
+        Server.setUsuarioRecuperadoListener(new UsuarioRecuperadoListener() {
+            @Override
+            public void onUsuarioRecuperado() {
+                // Los datos del usuario han sido recuperados, ahora puedes actualizar los campos de texto
+                nombrei.setText(nombre);
+                contrasenyai.setText(contrasenya);
+                emaili.setText(email);
+            }
+        });
+        Server.setTelefonoRecuperadoListener(new TelefonoRecuperadoListener() {
+            @Override
+            public void onTelefonoRecuperado() {
+                // Los datos del usuario han sido recuperados, ahora puedes actualizar los campos de texto
+                telefonoi.setText(telefono);
+            }
+        });
+
+        // Inicia la recuperación de datos del usuario
+        Server.recuperarUsuario(requestQueue);
+        Server.recuperarTelefono(requestQueue);
+
+
+
+    }
+
+    public static void setUsuarioRecuperadoListener(UsuarioRecuperadoListener listener) {
+        usuarioRecuperadoListener = listener;
+    }
+    public static void setTelefonoRecuperadoListener(TelefonoRecuperadoListener listener){
+        telefonoRecuperadoListener = listener;
+    }
+
     /**
      * getUrl1()
      *
@@ -151,20 +301,18 @@ public class Server {
      *
      * @return URL del servidor.
      */
-    public static String getUrl1()
+    public  static String getUrl1()
     {
         return  Url1;
     }
-    public static String getUrlRecuperarUsuario()
+    public  static String getUrlRecuperarUsuario()
     {
         return  UrlRecuperarUsuario;
     }
-    public static String getNombre()
-    {
-        return  nombre;
-    }
-    public static String getContrasenya()
+    public  static String getNombre() {return  nombre;}
+    public  static String getContrasenya()
     {
         return  contrasenya;
     }
+    public  static String getTelefono(){return telefono;}
 }

@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     TextView co2, temp; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
+    Server server;
 
     // Etiquetas para mensajes de registro.
     private static final String ETIQUETA_LOG = ">>>>";
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                         co2.setText(co2p);
                         temp.setText(tempp);
 
-                        Server.crearPrueba(co2p, tempp,requestQueue);
+                        server.crearPrueba(co2p, tempp,requestQueue);
                     }
                 }
             }
