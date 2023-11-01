@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Establece el diseño de la interfaz de usuario para esta actividad
         setContentView(R.layout.login);
-
         // Asigna instancias de elementos de interfaz de usuario a variables
         tilCorreo = (TextInputLayout) findViewById(R.id.til_correo);
         tilContraseña = (TextInputLayout) findViewById(R.id.til_pass);
@@ -85,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
                 return parametros;
             }
         };
-
         // Crea una cola de solicitudes Volley y agrega la solicitud para que se ejecute
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);

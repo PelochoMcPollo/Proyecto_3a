@@ -43,6 +43,10 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
+    //----------------detectar cambios en el textView para alertas----
+
+    private CheckTextViewValue checker;
+
     TextView co2, temp; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
@@ -310,6 +314,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, "onCreate(): termina");
 
         // Asigna los TextView de la interfaz a las variables co2 y temp.
+
+        co2 = findViewById(R.id.CO2); //
+        temp =findViewById(R.id.Temp);
+        //alerta cuando cambia el textView de co2
+        checker = new CheckTextViewValue(co2);
+        checker.startChecking();
     } // onCreate()
 
     // Método llamado cuando se otorgan o deniegan permisos solicitados por la aplicación.
