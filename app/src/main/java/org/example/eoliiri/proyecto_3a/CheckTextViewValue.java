@@ -61,7 +61,7 @@ public class CheckTextViewValue {
                 .setContentText("El valor del TextView no ha cambiado durante " + CONSECUTIVE_MATCHES_THRESHOLD + " segundos.");
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);//tenia que cambiar los flags de FLAG_UPDATE_CURRENT a immutable
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
         builder.setContentIntent(pendingIntent);
 
         Notification notification = builder.build();
