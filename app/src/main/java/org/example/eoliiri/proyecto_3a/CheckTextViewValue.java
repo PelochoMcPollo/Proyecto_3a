@@ -57,8 +57,8 @@ public class CheckTextViewValue {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Sensor no conectado o dañado")
-                .setContentText("El valor del TextView no ha cambiado durante " + CONSECUTIVE_MATCHES_THRESHOLD + " segundos.");
+                .setContentTitle("Sensor no conectado o dañado");
+
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
