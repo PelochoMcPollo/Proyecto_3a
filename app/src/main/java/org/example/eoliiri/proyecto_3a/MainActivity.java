@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
 
+    SesionManager sesionManager; // Gestor de sesiones para almacenar credenciales de usuario.
+
     // Etiquetas para mensajes de registro.
     private static final String ETIQUETA_LOG = ">>>>";
 
@@ -299,6 +301,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sesionManager = new SesionManager(this);
+
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
         requestQueue = Volley.newRequestQueue(this);
 
@@ -331,6 +335,21 @@ public class MainActivity extends AppCompatActivity {
     } // ()
 
     public void lanzarLogin(View view) {
-        startActivity(new Intent(this, LoginActivity.class));
+
+        if (sesionManager.SesionIniciada()){
+            try {
+                startActivity(new Intent(this, Perfil.class));
+            }
+            catch (Exception e){
+                Log.d("TAG", e.toString());
+            }
+        }
+        else
+            try {
+                startActivity(new Intent(this, LoginActivity.class));
+            }
+            catch (Exception e){
+                Log.d("TAG", e.toString());
+            }
     }
 }
