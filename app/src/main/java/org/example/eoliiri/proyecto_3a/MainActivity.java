@@ -10,12 +10,14 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,16 +39,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 
 public class MainActivity extends AppCompatActivity {
 
+    //----------------detectar cambios en el textView para alertas----
+
+    private CheckTextViewValue checker;
+
     TextView co2, temp; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
-    Server server;
 
     // Etiquetas para mensajes de registro.
     private static final String ETIQUETA_LOG = ">>>>";
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                         co2.setText(co2p);
                         temp.setText(tempp);
 
-                        server.crearPrueba(co2p, tempp,requestQueue);
+                        Server.crearPrueba(co2p, tempp,requestQueue);
                     }
                 }
             }
@@ -300,6 +304,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
         requestQueue = Volley.newRequestQueue(this);
 
@@ -311,6 +317,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, "onCreate(): termina");
 
         // Asigna los TextView de la interfaz a las variables co2 y temp.
+
+        co2 = findViewById(R.id.CO2); //
+        temp =findViewById(R.id.Temp);
+        //alerta cuando cambia el textView de co2
+        checker = new CheckTextViewValue(co2);
+        checker.startChecking();
     } // onCreate()
 
     // Método llamado cuando se otorgan o deniegan permisos solicitados por la aplicación.
@@ -331,4 +343,16 @@ public class MainActivity extends AppCompatActivity {
         // Otras líneas 'case' para verificar otros permisos que la aplicación podría solicitar.
     } // ()
 
+    public void lanzarLogin(View view) {
+        startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    public void onInformacion(View view) {
+        // 在这里编写在按钮被点击时要执行的操作
+        Intent intent = new Intent(this, informacion.class);
+        startActivity(intent);
+    }
+
 }
+
+

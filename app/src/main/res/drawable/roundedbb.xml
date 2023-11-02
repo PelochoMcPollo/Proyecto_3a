@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <shape xmlns:android="http://schemas.android.com/apk/res/android">
+        <solid android:color="#A6CDE4"/> <!-- Cambia este valor para establecer el color de fondo -->
+        <corners android:radius="100dp"/> <!-- Ajusta este valor para hacer el EditText más o menos redondo -->
+    </shape>
+</selector>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="EstiloBoton">
+        <item name="android:textColor">#000000</item> <!-- Cambia el color de texto a rojo -->
+        <item name="android:textSize">18sp</item> <!-- Cambia el tamaño del texto -->
+        <item name="android:textStyle">bold</item> <!-- Hace que el texto sea en negrita -->
+        <item name="android:layout_marginTop">16dp</item> <!-- Agrega un margen -->
+        <item name="android:backgroundTint">#FFCF54</item>
+    </style>
+
+    <style name="EstiloBotonBlanco">
+        <item name="android:textColor">#000000</item> <!-- Cambia el color de texto a rojo -->
+        <item name="android:textSize">18sp</item> <!-- Cambia el tamaño del texto -->
+        <item name="android:textStyle">bold</item> <!-- Hace que el texto sea en negrita -->
+        <item name="android:layout_marginTop">16dp</item> <!-- Agrega un margen -->
+        <item name="android:backgroundTint">#FFFFFF</item>
+
+    </style>
+
+    <style name="estiloButtonAul">
+        <item name="android:textColor">#1D1B1B</item> <!-- Cambia el color de texto a rojo -->
+        <item name="android:textSize">18sp</item> <!-- Cambia el tamaño del texto -->
+        <item name="android:textStyle">normal</item> <!-- Hace que el texto sea en negrita -->
+        <item name="android:layout_marginTop">16dp</item> <!-- Agrega un margen -->
+        <item name="android:backgroundTint">#A6CDE4</item>
+
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Otras configuraciones de estilo -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+
+    <style name="MyActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/white</item>
+    </style>
+
+</resources>
