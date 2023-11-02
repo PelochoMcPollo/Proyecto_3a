@@ -257,6 +257,15 @@ public class Server {
         requestQueue.add(stringRequest);
     }
 
+
+    /**
+     *
+     * @param requestQueue
+     * @param nombrei
+     * @param contrasenyai
+     * @param telefonoi
+     * @param emaili
+     */
     public static void modificarTextos(RequestQueue requestQueue,TextInputEditText nombrei, TextInputEditText contrasenyai , TextInputEditText telefonoi, TextInputEditText emaili)
     {
         Server.setUsuarioRecuperadoListener(new UsuarioRecuperadoListener() {
