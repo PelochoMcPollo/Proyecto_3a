@@ -9,6 +9,9 @@ import android.widget.Button;
 public class RegisterActivity extends AppCompatActivity {
     Button confirmar;
     Button cancelar;
+
+
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
