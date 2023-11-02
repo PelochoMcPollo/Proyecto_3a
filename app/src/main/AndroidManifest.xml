@@ -13,12 +13,12 @@
 
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_sinnombre"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo_sinnombre"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
 
@@ -32,11 +32,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".informacion"
+            android:theme="@style/Theme.Proyecto_3a"
+            android:exported="true"
+            android:label="Information Activity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".LoginActivity"
             android:theme="@style/Theme.Proyecto_3a"/>
         <activity android:name=".Perfil"
             android:theme="@style/Theme.Proyecto_3a"/>
 
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Proyecto_3a"/>
+
+        <activity android:name=".EditarPerfil"
+            android:theme="@style/Theme.Proyecto_3a"/>
     </application>
 
 </manifest>

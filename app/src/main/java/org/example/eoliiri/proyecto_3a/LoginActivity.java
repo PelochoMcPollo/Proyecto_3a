@@ -1,12 +1,10 @@
 package org.example.eoliiri.proyecto_3a;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +24,7 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     TextInputLayout tilCorreo, tilContraseña;
+    TextView registro, recuperarcontrasenya;
     MaterialButton btlogin;
     String email, password;
     private SesionManager sesionManager;
@@ -41,8 +40,10 @@ public class LoginActivity extends AppCompatActivity {
         // Asigna instancias de elementos de interfaz de usuario a variables
         tilCorreo = findViewById(R.id.til_correo);
         tilContraseña = findViewById(R.id.til_pass);
-        btlogin = findViewById(R.id.btlogin);
+        btlogin = findViewById(R.id.confirmarr);
         btlogin.setText("Iniciar sesión");
+        registro = findViewById(R.id.textView4);
+        recuperarcontrasenya = findViewById(R.id.textView6);
 
         // Configura un escuchador para el botón de inicio de sesión
         btlogin.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +52,14 @@ public class LoginActivity extends AppCompatActivity {
                 email = tilCorreo.getEditText().getText().toString().trim();
                 password = tilContraseña.getEditText().getText().toString().trim();
                 // Llama al método Validar con la URL del servidor como argumento
-                Validar("http://192.168.1.49/proyecto_3a/src/api/validarusuario.php");
+                Validar("http://10.237.24.60/proyecto_3a/src/api/validarusuario.php");
+            }
+        });
+        registro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                finish();
             }
         });
     }
@@ -59,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
     // Método para validar el inicio de sesión
 
     /**
-     *
      * @param URL
      */
     private void Validar(String URL) {

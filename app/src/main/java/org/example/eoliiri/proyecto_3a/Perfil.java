@@ -35,4 +35,9 @@ public class Perfil extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void lanzarEditar(View view) {
+        Intent intent = new Intent(this, EditarPerfil.class);
+        startActivity(intent);
+    }
 }
