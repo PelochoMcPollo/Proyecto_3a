@@ -68,4 +68,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/botonBuscarNuestroDispositivoBTLE" />
+
+    <Button
+        android:id="@+id/informacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:onClick="onInformacion"
+        android:text="informacion test"
+        app:layout_constraintEnd_toEndOf="@+id/btlanzarlogin"
+        app:layout_constraintStart_toStartOf="@+id/btlanzarlogin"
+        app:layout_constraintTop_toBottomOf="@+id/btlanzarlogin" />
 </androidx.constraintlayout.widget.ConstraintLayout>

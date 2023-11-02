@@ -17,6 +17,7 @@ import android.os.Debug;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -303,6 +304,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
         requestQueue = Volley.newRequestQueue(this);
 
@@ -343,4 +346,13 @@ public class MainActivity extends AppCompatActivity {
     public void lanzarLogin(View view) {
         startActivity(new Intent(this, LoginActivity.class));
     }
+
+    public void onInformacion(View view) {
+        // 在这里编写在按钮被点击时要执行的操作
+        Intent intent = new Intent(this, informacion.class);
+        startActivity(intent);
+    }
+
 }
+
+
