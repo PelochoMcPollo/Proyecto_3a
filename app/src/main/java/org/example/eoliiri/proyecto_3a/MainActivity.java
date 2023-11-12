@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     //----------------detectar cambios en el textView para alertas----
 
-    private CheckTextViewValue checker;
+
+    private int scanResultCount = 0;
 
     TextView co2, temp; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
@@ -167,29 +168,56 @@ public class MainActivity extends AppCompatActivity {
             public void onScanResult(int callbackType, ScanResult resultado) {
                 super.onScanResult(callbackType, resultado);
                 Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
+                Log.d("cishu", String.valueOf(scanResultCount));
+                Log.d("mingzi", resultado.getDevice().getAddress());
+
+
+
 
                 // Comprobar si el dispositivo escaneado coincide con el dispositivo buscado por nombre.
-                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
-                    mostrarInformacionDispositivoBTLE(resultado);
+               if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
                     byte[] bytes = resultado.getScanRecord().getBytes();
+
                     TramaIBeacon tib = new TramaIBeacon(bytes);
 
+
                     // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
-                    if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor()))))
-                    {
-                        Log.d("Pelochas",co2p);
-                        Log.d("Pelochas",tempp);
+
+                   if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor())))) {
+                        Log.d("Pelochas", co2p);
+                        Log.d("Pelochas", tempp);
 
                         co2p = String.valueOf(Utilidades.bytesToInt(tib.getMajor()));
                         tempp = String.valueOf(Utilidades.bytesToInt(tib.getMinor()));
 
                         co2.setText(co2p);
                         temp.setText(tempp);
+                       scanResultCount = 0;
 
-                        Server.crearPrueba(co2p, tempp,requestQueue);
+
+                        Server.crearPrueba(co2p, tempp, requestQueue);
                     }
+
+
+
+
+
                 }
+
+               else {
+                   // Si la condición no se cumple, incrementar el contador.
+
+                   scanResultCount++;}
+
+                // Si el contador alcanza 50, mostrar la notificación.
+                if (scanResultCount >= 200) {
+                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía beacons al móvil");
+                    // También puedes reiniciar el contador aquí si deseas que continúe la cuenta.
+                    scanResultCount = 0;
+                }
+
             }
+
 
             @Override
             public void onBatchScanResults(List<ScanResult> results) {
@@ -203,7 +231,10 @@ public class MainActivity extends AppCompatActivity {
                 super.onScanFailed(errorCode);
                 Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanFailed() ");
 
+                // 在 MainActivity 中调用 mostrarNotificacion，使用 MainActivity.this 作为 Context
+                NotificationHelper.mostrarNotificacion(MainActivity.this, "Sensor dañado", "El sensor no envía beacons al móvil");
             }
+
         };
 
         // Crear un filtro para buscar dispositivos con un nombre específico.
@@ -323,8 +354,7 @@ public class MainActivity extends AppCompatActivity {
         co2 = findViewById(R.id.CO2); //
         temp =findViewById(R.id.Temp);
         //alerta cuando cambia el textView de co2
-        checker = new CheckTextViewValue(co2);
-        checker.startChecking();
+
     } // onCreate()
 
     // Método llamado cuando se otorgan o deniegan permisos solicitados por la aplicación.
