@@ -176,19 +176,12 @@ public class MainActivity extends AppCompatActivity {
 
                 // Comprobar si el dispositivo escaneado coincide con el dispositivo buscado por nombre.
                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
+                    byte[] bytes = resultado.getScanRecord().getBytes();
 
-                   byte[] bytes = resultado.getScanRecord().getBytes();
-
-                   TramaIBeacon tib = new TramaIBeacon(bytes);
-                   //计算距离
-                   double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
-
-                   // 显示距离在 distanciavalue TextView 上
-                   mostrarDistancia(distancia);
+                    TramaIBeacon tib = new TramaIBeacon(bytes);
 
 
-                   // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
-
+                    // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
 
                    if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor())))) {
                         Log.d("Pelochas", co2p);
@@ -254,20 +247,6 @@ public class MainActivity extends AppCompatActivity {
         //      + " -> " + Utilidades.stringToUUID( dispositivoBuscado ) );
         this.elEscanner.startScan(this.callbackDelEscaneo);
     } // ()
-
-
-    // 计算距离的方法 Cómo calcular la distancia
-    private double calcularDistancia(int txPower, int rssi) {
-        // 根据信号强度衰减模型计算距离
-        return Math.pow(10d, ((double) (txPower - rssi)) / (100 * 3));
-    }
-
-    // 显示距离的方法 Cómo mostrar la distancia
-    private void mostrarDistancia(double distancia) {
-        // 将距离显示在 distanciavalue 的 TextView 上    Mostrar distancia en TextView de distanciavalue
-        TextView distanciavalue = findViewById(R.id.distanciavalue);
-        distanciavalue.setText(String.format("%.2f", distancia) + " meters");
-    }
 
     // --------------------------------------------------------------
     // Detiene la búsqueda de dispositivos Bluetooth LE.
