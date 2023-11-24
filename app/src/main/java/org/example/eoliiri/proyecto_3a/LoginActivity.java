@@ -64,6 +64,13 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+        recuperarcontrasenya.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, EnviarMailContrasenya.class));
+                finish();
+            }
+        });
     }
 
     // Método para validar el inicio de sesión

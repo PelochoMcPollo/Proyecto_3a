@@ -3,6 +3,7 @@ package org.example.eoliiri.proyecto_3a;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class EditarPerfil extends AppCompatActivity {
         email = findViewById(R.id.email);  // Obtiene la referencia al campo de correo electrónico desde la vista
         Server.modificarTextos(requestQueue, nombre, telefono, email, sesionManager.getEmail());  // Carga los datos del perfil del usuario en la interfaz de usuario
         guardar = findViewById(R.id.botonguardar);  // Obtiene la referencia al botón "Guardar" desde la vista
+        Log.d("Hola",sesionManager.getEmail());
     }
 
     public void guardar(View v) {
@@ -64,6 +66,7 @@ public class EditarPerfil extends AppCompatActivity {
     public void aceptar() {
         Server.actualizarusuario(requestQueue, nombreguardar, emailguardar, sesionManager.getEmail());  // Actualiza la información del usuario en el servidor
         Server.actualizarTelefono(requestQueue, telefonoguardar, sesionManager.getEmail());  // Actualiza el teléfono del usuario en el servidor
+        sesionManager.setEmail(emailguardar);
         Toast.makeText(this, "Cambios guardados", Toast.LENGTH_SHORT).show();  // Muestra un mensaje de "Cambios guardados"
         finish();  // Finaliza la actividad y regresa a la pantalla anterior
     }
@@ -74,5 +77,9 @@ public class EditarPerfil extends AppCompatActivity {
 
     public void Volver(View v) {
         finish();  // Finaliza la actividad y regresa a la pantalla anterior
+    }
+    public void cambiarcontrasenya(View v) {
+        startActivity(new Intent(EditarPerfil.this, CambiarContrasenya.class));
+        finish();
     }
 }

@@ -55,6 +55,19 @@
 
         <activity android:name=".EditarPerfil"
             android:theme="@style/Theme.Proyecto_3a"/>
+        <activity android:name=".CambiarContrasenya"
+            android:theme="@style/Theme.Proyecto_3a"/>
+        <activity android:name=".EnviarMailContrasenya"
+            android:theme="@style/Theme.Proyecto_3a"/>
+
+        <activity
+            android:name=".RecuperarContrasenya"
+            android:theme="@style/Theme.Proyecto_3a"/>
+
+        <activity
+            android:name=".CodigoContrasenya"
+            android:theme="@style/Theme.Proyecto_3a"/>
+
         <activity android:name=".VerificarActivity"
             android:theme="@style/Theme.Proyecto_3a"/>
     </application>

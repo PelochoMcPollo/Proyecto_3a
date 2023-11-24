@@ -32,6 +32,8 @@ public class Server {
     private static final String  UrlRecuperarTelefono = "http://"+ip+"/proyecto_3a/src/api/recuperartelefono.php?email=";
     private  static  final  String UrlActualizarUsuario = "http://"+ip+"/proyecto_3a/src/api/actualizarusuario.php?email=";
     private  static  final  String UrlActualizarTelefono = "http://"+ip+"/proyecto_3a/src/api/actualizartelefono.php?email=";
+    private  static  final  String UrlCambiarContrasenya = "http://"+ip+"/proyecto_3a/src/api/cambiarcontrasenyaapp.php?email=";
+    private  static  final  String UrlRecuperarContrasenya = "http://"+ip+"/proyecto_3a/src/api/recuperarcontrasenya.php?email=";
 
     private static String nombre,contrasenya,telefono,email;
 
@@ -249,6 +251,69 @@ public class Server {
                 Map <String, String> params = new HashMap<>();
                 params.put("email",correo);
                 params.put("telefono",telefono);
+                return params;
+            }
+        };
+        // Se agrega la solicitud a la cola de solicitudes para su procesamiento.
+        requestQueue.add(stringRequest);
+    }
+
+    public static void cambiarContrasenya(RequestQueue requestQueue ,final String contrasenyaactual, final String nuevacontrasenya , final String confirmarcontrasenya ,final String correo){
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,    // Método HTTP (POST).
+                UrlCambiarContrasenya.concat(correo),                   // URL del servidor.
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Pelochas","Actualizado");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Pelochas", error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map <String, String> params = new HashMap<>();
+                params.put("contrasenyaactual",contrasenyaactual);
+                params.put("nuevacontrasenya",nuevacontrasenya);
+                params.put("confirmarcontrasenya",confirmarcontrasenya);
+                params.put("correo",correo);
+                return params;
+            }
+        };
+        // Se agrega la solicitud a la cola de solicitudes para su procesamiento.
+        requestQueue.add(stringRequest);
+    }
+
+    public static void recuperContrasenya(RequestQueue requestQueue ,final String nuevacontrasenya , final String confirmarcontrasenya ,final String correo){
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,    // Método HTTP (POST).
+                UrlRecuperarContrasenya.concat(correo),                   // URL del servidor.
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Pelochas","Actualizado");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Pelochas", error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map <String, String> params = new HashMap<>();
+                params.put("nuevacontrasenya",nuevacontrasenya);
+                params.put("confirmarcontrasenya",confirmarcontrasenya);
+                params.put("email",correo);
                 return params;
             }
         };
