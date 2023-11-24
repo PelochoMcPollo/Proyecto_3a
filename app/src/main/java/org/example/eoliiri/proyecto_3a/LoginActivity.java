@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 email = tilCorreo.getEditText().getText().toString().trim();
                 password = tilContraseña.getEditText().getText().toString().trim();
                 // Llama al método Validar con la URL del servidor como argumento
-                Validar("http://10.237.24.60/proyecto_3a/src/api/validarusuario.php");
+                Validar("http://192.168.1.49/proyecto_3a/src/api/validarusuario.php");
             }
         });
         registro.setOnClickListener(new View.OnClickListener() {

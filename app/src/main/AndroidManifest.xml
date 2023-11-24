@@ -54,6 +54,8 @@
 
         <activity android:name=".EditarPerfil"
             android:theme="@style/Theme.Proyecto_3a"/>
+        <activity android:name=".VerificarActivity"
+            android:theme="@style/Theme.Proyecto_3a"/>
     </application>
 
 </manifest>
