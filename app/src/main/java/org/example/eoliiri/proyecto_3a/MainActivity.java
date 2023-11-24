@@ -171,10 +171,27 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("cishu", String.valueOf(scanResultCount));
                 Log.d("mingzi", resultado.getDevice().getAddress());
 
+               /*
+               Si mueves estas cuatro líneas de código aquí, podrás mostrar los datos.
+               Esto se debe a que si el código está en esta ubicación, no estará buscando en nuestros sensores,
+               sino en todas las señales de Bluetooth que se pueden encontrar alrededor.
+
+                byte[] bytes = resultado.getScanRecord().getBytes();
+
+                    TramaIBeacon tib = new TramaIBeacon(bytes);
+
+                   //计算距离
+                   double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
+
+                   // 显示距离在 distanciavalue TextView 上
+                   mostrarDistancia(distancia);                        */
 
 
 
-                // Comprobar si el dispositivo escaneado coincide con el dispositivo buscado por nombre.
+
+
+
+
                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
                     byte[] bytes = resultado.getScanRecord().getBytes();
 
