@@ -279,8 +279,18 @@ public class MainActivity extends AppCompatActivity {
     // 计算距离的方法 Cómo calcular la distancia
     private double calcularDistancia(int txPower, int rssi) {
         // 根据信号强度衰减模型计算距离
-        return Math.pow(10d, ((double) (txPower - rssi)) / (90 * 4));
+        double distancia = Math.pow(10d, ((double) (txPower - rssi)) / (60 * 3));
+
+        // 根据条件调整距离
+        if (distancia < 1) {
+            distancia /= 3;
+        } else {
+            distancia /= 2;
+        }
+
+        return distancia;
     }
+
 
     // 显示距离的方法 Cómo mostrar la distancia
     private void mostrarDistancia(double distancia) {
