@@ -196,18 +196,20 @@ public class MainActivity extends AppCompatActivity {
 
 
                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
-                   Toast.makeText(getApplicationContext(), "Cpnectado correctamente nuestro dispositivo",
-                           Toast.LENGTH_LONG).show();
+
                    mostrarInformacionDispositivoBTLE(resultado);
                     byte[] bytes = resultado.getScanRecord().getBytes();
 
                     TramaIBeacon tib = new TramaIBeacon(bytes);
+
+                   scanResultCount = 0;
 
                    //计算距离
                    double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
 
                    // 显示距离在 distanciavalue TextView 上
                    mostrarDistancia(distancia);
+
 
 
                     // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
@@ -221,10 +223,11 @@ public class MainActivity extends AppCompatActivity {
 
                         co2.setText(co2p);
                         temp.setText(tempp);
-                       scanResultCount = 0;
+
 
 
                         Server.crearPrueba(co2p, tempp, requestQueue);
+
                     }
                }
 
@@ -234,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                    scanResultCount++;}
 
                 // Si el contador alcanza 200, mostrar la notificación.
-                if (scanResultCount >= 200) {
+                if (scanResultCount >= 500) {
                     NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía beacons al móvil");
                     // También puedes reiniciar el contador aquí si deseas que continúe la cuenta.
                     scanResultCount = 0;
@@ -276,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
     // 计算距离的方法 Cómo calcular la distancia
     private double calcularDistancia(int txPower, int rssi) {
         // 根据信号强度衰减模型计算距离
-        return Math.pow(10d, ((double) (txPower - rssi)) / (100 * 4));
+        return Math.pow(10d, ((double) (txPower - rssi)) / (90 * 4));
     }
 
     // 显示距离的方法 Cómo mostrar la distancia

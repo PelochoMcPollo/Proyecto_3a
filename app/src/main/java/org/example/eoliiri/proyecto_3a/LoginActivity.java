@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         btlogin = findViewById(R.id.confirmarr);
         btlogin.setText("Iniciar sesión");
         registro = findViewById(R.id.textView4);
-        recuperarcontrasenya = findViewById(R.id.textView6);
+        recuperarcontrasenya = findViewById(R.id.recuperarcontrasenya);
 
         // Configura un escuchador para el botón de inicio de sesión
         btlogin.setOnClickListener(new View.OnClickListener() {
