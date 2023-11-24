@@ -24,7 +24,7 @@ import java.util.Map;
  * mediciones de CO2 y temperatura.
  */
 public class Server {
-    private static String ip = "10.237.24.60";
+    private static String ip = "192.168.148.194";
 
     // URL del servidor al que se enviarán las mediciones.
     private static final String Url1 = "http://"+ip+"/proyecto_3a/src/api/guardarprueba.php";
@@ -32,6 +32,8 @@ public class Server {
     private static final String  UrlRecuperarTelefono = "http://"+ip+"/proyecto_3a/src/api/recuperartelefono.php?email=";
     private  static  final  String UrlActualizarUsuario = "http://"+ip+"/proyecto_3a/src/api/actualizarusuario.php?email=";
     private  static  final  String UrlActualizarTelefono = "http://"+ip+"/proyecto_3a/src/api/actualizartelefono.php?email=";
+    private  static  final  String UrlCambiarContrasenya = "http://"+ip+"/proyecto_3a/src/api/cambiarcontrasenyaapp.php?email=";
+    private  static  final  String UrlRecuperarContrasenya = "http://"+ip+"/proyecto_3a/src/api/recuperarcontrasenya.php?email=";
 
     private static String nombre,contrasenya,telefono,email;
 
@@ -256,6 +258,69 @@ public class Server {
         requestQueue.add(stringRequest);
     }
 
+    public static void cambiarContrasenya(RequestQueue requestQueue ,final String contrasenyaactual, final String nuevacontrasenya , final String confirmarcontrasenya ,final String correo){
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,    // Método HTTP (POST).
+                UrlCambiarContrasenya.concat(correo),                   // URL del servidor.
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Pelochas","Actualizado");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Pelochas", error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map <String, String> params = new HashMap<>();
+                params.put("contrasenyaactual",contrasenyaactual);
+                params.put("nuevacontrasenya",nuevacontrasenya);
+                params.put("confirmarcontrasenya",confirmarcontrasenya);
+                params.put("correo",correo);
+                return params;
+            }
+        };
+        // Se agrega la solicitud a la cola de solicitudes para su procesamiento.
+        requestQueue.add(stringRequest);
+    }
+
+    public static void recuperContrasenya(RequestQueue requestQueue ,final String nuevacontrasenya , final String confirmarcontrasenya ,final String correo){
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,    // Método HTTP (POST).
+                UrlRecuperarContrasenya.concat(correo),                   // URL del servidor.
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Pelochas","Actualizado");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Pelochas", error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map <String, String> params = new HashMap<>();
+                params.put("nuevacontrasenya",nuevacontrasenya);
+                params.put("confirmarcontrasenya",confirmarcontrasenya);
+                params.put("email",correo);
+                return params;
+            }
+        };
+        // Se agrega la solicitud a la cola de solicitudes para su procesamiento.
+        requestQueue.add(stringRequest);
+    }
+
 
     /**
      *
@@ -286,9 +351,9 @@ public class Server {
         Server.recuperarUsuario(requestQueue,correo);
         Server.recuperarTelefono(requestQueue,correo);
 
-
-
     }
+
+
 
     public static void setUsuarioRecuperadoListener(UsuarioRecuperadoListener listener) {
         usuarioRecuperadoListener = listener;

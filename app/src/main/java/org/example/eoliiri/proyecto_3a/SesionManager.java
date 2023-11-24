@@ -40,4 +40,16 @@ public class SesionManager {
         editor.remove(KEY_PASSWORD);
         editor.apply();
     }
+
+    public void setEmail(String email) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_EMAIL, email);
+        editor.apply();
+    }
+
+    public void setPassword(String password) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_PASSWORD, password);
+        editor.apply();
+    }
 }
