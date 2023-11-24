@@ -1,7 +1,6 @@
 package org.example.eoliiri.proyecto_3a;
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -33,11 +32,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
@@ -170,19 +172,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
                 Log.d("cishu", String.valueOf(scanResultCount));
                 Log.d("mingzi", resultado.getDevice().getAddress());
-
-
-
-
-                // Comprobar si el dispositivo escaneado coincide con el dispositivo buscado por nombre.
+                //Comprobar si el dispositivo escaneado coincide con el dispositivo buscado por nombre.
                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
                     byte[] bytes = resultado.getScanRecord().getBytes();
-
                     TramaIBeacon tib = new TramaIBeacon(bytes);
-
-
                     // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
-
                    if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor())))) {
                         Log.d("Pelochas", co2p);
                         Log.d("Pelochas", tempp);
@@ -193,15 +187,8 @@ public class MainActivity extends AppCompatActivity {
                         co2.setText(co2p);
                         temp.setText(tempp);
                        scanResultCount = 0;
-
-
                         Server.crearPrueba(co2p, tempp, requestQueue);
                     }
-
-
-
-
-
                 }
 
                else {
@@ -276,6 +263,13 @@ public class MainActivity extends AppCompatActivity {
         // Inicia la búsqueda de un dispositivo Bluetooth LE específico.
         this.buscarEsteDispositivoBTLE("PER PUIGDEMOOONT");
     } // ()
+    //--------------------version 2 de :botonBuscarNuestroDispositivoBTLEPulsado----------------------
+    //-------------se llama sin button -----------------------------
+    public void botonBuscarNuestroDispositivoBTLEPulsadoV2(String nombre) {
+        // Inicia la búsqueda de un dispositivo Bluetooth LE específico.
+        this.buscarEsteDispositivoBTLE("nombre");
+    }
+
 
     // Método llamado al pulsar el botón "Detener Búsqueda de Dispositivos BTLE" en la interfaz.
     public void botonDetenerBusquedaDispositivosBTLEPulsado(View v) {
@@ -402,6 +396,37 @@ public class MainActivity extends AppCompatActivity {
 
     public void lanzarRegistrate(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
+    }
+
+    public void lanzarScanner(View view){
+        // Ejemplo utilizando ZXing
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.setPrompt("Escanea el código QR del sensor");
+        integrator.setBeepEnabled(false);
+        integrator.initiateScan();
+        //------handle the respuesta
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                String qrData = result.getContents();
+                // Process the scanned QR code data
+                // ...
+                Log.e("escaneo correcto",qrData);
+                botonBuscarNuestroDispositivoBTLEPulsadoV2(qrData);
+            } else {
+                // Handle the case where scanning was canceled or failed
+                // ...
+                Log.e("escaneo correcto","MAAAAAAAL");
+
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 }
