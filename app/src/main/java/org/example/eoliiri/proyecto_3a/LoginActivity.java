@@ -1,6 +1,8 @@
 package org.example.eoliiri.proyecto_3a;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         btlogin = findViewById(R.id.confirmarr);
         btlogin.setText("Iniciar sesión");
         registro = findViewById(R.id.textView4);
-        recuperarcontrasenya = (TextView) findViewById(R.id.recuperarcontrasenya);
+        recuperarcontrasenya = findViewById(R.id.textView6);
 
         // Configura un escuchador para el botón de inicio de sesión
         btlogin.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 email = tilCorreo.getEditText().getText().toString().trim();
                 password = tilContraseña.getEditText().getText().toString().trim();
                 // Llama al método Validar con la URL del servidor como argumento
-                Validar("http://192.168.148.194/proyecto_3a/src/api/validarusuario.php");
+                Validar("http://192.168.1.49/proyecto_3a/src/api/validarusuario.php");
             }
         });
         registro.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(String response) {
                     // Maneja la respuesta del servidor
 
-                    Log.d("hola", response);
+                    Log.d("TAG", response);
                     // Si el correo no está vacío, muestra un mensaje de inicio de sesión correcto y redirige al usuario
                     if (!response.isEmpty()) {
                         sesionManager.guardarCredenciales(email, password);
