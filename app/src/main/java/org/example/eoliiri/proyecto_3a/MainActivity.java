@@ -33,6 +33,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.HashMap;
 import java.util.List;
@@ -297,6 +299,13 @@ public class MainActivity extends AppCompatActivity {
         // Inicia la búsqueda de un dispositivo Bluetooth LE específico.
         this.buscarEsteDispositivoBTLE("PER PUIGDEMOOONT");
     } // ()
+    //--------------------version 2 de :botonBuscarNuestroDispositivoBTLEPulsado----------------------
+    //-------------se llama sin button -----------------------------
+    public void botonBuscarNuestroDispositivoBTLEPulsadoV2(String nombre) {
+        // Inicia la búsqueda de un dispositivo Bluetooth LE específico.
+        this.buscarEsteDispositivoBTLE("nombre");
+    }
+
 
     // Método llamado al pulsar el botón "Detener Búsqueda de Dispositivos BTLE" en la interfaz.
     public void botonDetenerBusquedaDispositivosBTLEPulsado(View v) {
@@ -423,6 +432,37 @@ public class MainActivity extends AppCompatActivity {
 
     public void lanzarRegistrate(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
+    }
+
+    public void lanzarScanner(View view){
+        // Ejemplo utilizando ZXing
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.setPrompt("Escanea el código QR del sensor");
+        integrator.setBeepEnabled(false);
+        integrator.initiateScan();
+        //------handle the respuesta
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                String qrData = result.getContents();
+                // Process the scanned QR code data
+                // ...
+                Log.e("escaneo correcto",qrData);
+                botonBuscarNuestroDispositivoBTLEPulsadoV2(qrData);
+            } else {
+                // Handle the case where scanning was canceled or failed
+                // ...
+                Log.e("escaneo correcto","MAAAAAAAL");
+
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 }
