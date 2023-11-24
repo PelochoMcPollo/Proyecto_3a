@@ -282,9 +282,10 @@ public class MainActivity extends AppCompatActivity {
         double distancia = Math.pow(10d, ((double) (txPower - rssi)) / (80));
 
         // 根据条件调整距离
-        if (distancia < 1) {
+        if (distancia > 0.5 && distancia < 1) {
             distancia /= 3;
         }
+
         if(distancia < 2){
             distancia /= 2;
         }
