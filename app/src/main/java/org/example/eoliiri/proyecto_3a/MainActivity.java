@@ -169,16 +169,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScanResult(int callbackType, ScanResult resultado) {
                 super.onScanResult(callbackType, resultado);
+
                 Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
                 Log.d("cishu", String.valueOf(scanResultCount));
-                Log.d("mingzi", resultado.getDevice().getAddress());
 
-               /*
-               Si mueves estas cuatro líneas de código aquí, podrás mostrar los datos.
-               Esto se debe a que si el código está en esta ubicación, no estará buscando en nuestros sensores,
-               sino en todas las señales de Bluetooth que se pueden encontrar alrededor.
 
-                byte[] bytes = resultado.getScanRecord().getBytes();
+
+               //Si mueves estas cuatro líneas de código aquí, podrás mostrar los datos.
+               //Esto se debe a que si el código está en esta ubicación, no estará buscando en nuestros sensores,
+               //sino en todas las señales de Bluetooth que se pueden encontrar alrededor.
+
+               /* byte[] bytes = resultado.getScanRecord().getBytes();
 
                     TramaIBeacon tib = new TramaIBeacon(bytes);
 
@@ -186,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                    double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
 
                    // 显示距离在 distanciavalue TextView 上
-                   mostrarDistancia(distancia);                        */
+                   mostrarDistancia(distancia);*/
 
 
 
@@ -195,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
+                   Toast.makeText(getApplicationContext(), "Cpnectado correctamente nuestro dispositivo",
+                           Toast.LENGTH_LONG).show();
+                   mostrarInformacionDispositivoBTLE(resultado);
                     byte[] bytes = resultado.getScanRecord().getBytes();
 
                     TramaIBeacon tib = new TramaIBeacon(bytes);
@@ -222,19 +226,14 @@ public class MainActivity extends AppCompatActivity {
 
                         Server.crearPrueba(co2p, tempp, requestQueue);
                     }
-
-
-
-
-
-                }
+               }
 
                else {
                    // Si la condición no se cumple, incrementar el contador.
 
                    scanResultCount++;}
 
-                // Si el contador alcanza 50, mostrar la notificación.
+                // Si el contador alcanza 200, mostrar la notificación.
                 if (scanResultCount >= 200) {
                     NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía beacons al móvil");
                     // También puedes reiniciar el contador aquí si deseas que continúe la cuenta.
@@ -256,13 +255,12 @@ public class MainActivity extends AppCompatActivity {
                 super.onScanFailed(errorCode);
                 Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanFailed() ");
 
-                // 在 MainActivity 中调用 mostrarNotificacion，使用 MainActivity.this 作为 Context
-                NotificationHelper.mostrarNotificacion(MainActivity.this, "Sensor dañado", "El sensor no envía beacons al móvil");
+
             }
 
         };
 
-        // Crear un filtro para buscar dispositivos con un nombre específico.
+       // Crear un filtro para buscar dispositivos con un nombre específico.
         ScanFilter sf = new ScanFilter.Builder().setDeviceName(dispositivoBuscado).build();
         Log.d("Hola", sf.toString());
 
@@ -278,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
     // 计算距离的方法 Cómo calcular la distancia
     private double calcularDistancia(int txPower, int rssi) {
         // 根据信号强度衰减模型计算距离
-        return Math.pow(10d, ((double) (txPower - rssi)) / (100 * 3));
+        return Math.pow(10d, ((double) (txPower - rssi)) / (100 * 4));
     }
 
     // 显示距离的方法 Cómo mostrar la distancia
@@ -320,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
     //-------------se llama sin button -----------------------------
     public void botonBuscarNuestroDispositivoBTLEPulsadoV2(String nombre) {
         // Inicia la búsqueda de un dispositivo Bluetooth LE específico.
-        this.buscarEsteDispositivoBTLE("nombre");
+        this.buscarEsteDispositivoBTLE(nombre);
     }
 
 
