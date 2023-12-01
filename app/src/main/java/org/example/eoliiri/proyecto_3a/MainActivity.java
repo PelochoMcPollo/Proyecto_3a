@@ -47,10 +47,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     //----------------detectar cambios en el textView para alertas----
-
-
     private int scanResultCount = 0;
-
     TextView co2, temp; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
