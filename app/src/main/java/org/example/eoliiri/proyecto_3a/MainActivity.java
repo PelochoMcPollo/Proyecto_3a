@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Si el contador alcanza 200, mostrar la notificación.
                 if (scanResultCount >= 500) {
-                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía beacons al móvil");
+                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía datos al móvil");
                     // También puedes reiniciar el contador aquí si deseas que continúe la cuenta.
                     scanResultCount = 0;
                 }
