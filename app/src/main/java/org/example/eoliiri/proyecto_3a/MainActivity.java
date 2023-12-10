@@ -10,6 +10,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     // Escáner de dispositivos Bluetooth LE y callback para el escaneo.
     private BluetoothLeScanner elEscanner;
     private ScanCallback callbackDelEscaneo = null;
+
+    private Context appContext = this;
 
     // Método para buscar todos los dispositivos Bluetooth LE.
     @SuppressLint("MissingPermission")
@@ -175,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
                //Si mueves estas cuatro líneas de código aquí, podrás mostrar los datos.
                //Esto se debe a que si el código está en esta ubicación, no estará buscando en nuestros sensores,
                //sino en todas las señales de Bluetooth que se pueden encontrar alrededor.
@@ -224,6 +228,11 @@ public class MainActivity extends AppCompatActivity {
                         co2.setText(co2p);
                         temp.setText(tempp);
 
+
+                       int co2Value = Integer.parseInt(co2p);
+                       if (co2Value > 500) {
+                           CO2NotificationManager.showCO2AlertNotification(appContext, co2Value);
+                       }
 
 
                         Server.crearPrueba(co2p, tempp, requestQueue);
@@ -414,6 +423,9 @@ public class MainActivity extends AppCompatActivity {
         co2 = findViewById(R.id.CO2); //
         temp =findViewById(R.id.Temp);
         //alerta cuando cambia el textView de co2
+
+
+
 
     } // onCreate()
 
