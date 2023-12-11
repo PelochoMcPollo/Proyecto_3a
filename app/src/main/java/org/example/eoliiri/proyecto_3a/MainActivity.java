@@ -229,13 +229,16 @@ public class MainActivity extends AppCompatActivity {
                         temp.setText(tempp);
 
 
+
                        int co2Value = Integer.parseInt(co2p);
                        if (co2Value > 500) {
                            CO2NotificationManager.showCO2AlertNotification(appContext, co2Value);
+                       } else if (co2Value < 500) {
+
                        }
 
 
-                        Server.crearPrueba(co2p, tempp, requestQueue);
+                       Server.crearPrueba(co2p, tempp, requestQueue);
 
                     }
                }
@@ -307,6 +310,13 @@ public class MainActivity extends AppCompatActivity {
     private void mostrarDistancia(double distancia) {
         // 将距离显示在 distanciavalue 的 TextView 上    Mostrar distancia en TextView de distanciavalue
         TextView distanciavalue = findViewById(R.id.distanciavalue);
+        if(distancia<2){
+            distanciavalue.setText("Estas al lado de lsensor");
+        } else if (distancia>2&& distancia<5) {
+            distanciavalue.setText("Estas al lado de lsensor");
+        } else if (distancia>5) {
+           distanciavalue.setText("estas lejos del sensor");
+        }
         distanciavalue.setText(String.format("%.2f", distancia) + " meters");
     }
 
