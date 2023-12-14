@@ -394,6 +394,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void mainPage(View view) {
+        startActivity(new Intent(this, MainPage.class));
+    }
+
     public void lanzarRegistrate(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
