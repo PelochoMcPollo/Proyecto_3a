@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="331dp"
+        android:layout_height="614dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Términos y Privacidad  Bienvenido a nuestro servicio. Al utilizarlo, aceptas los siguientes términos y condiciones. Tu privacidad es importante para nosotros. Recopilamos información personal para mejorar tu experiencia y brindar un servicio personalizado. No compartiremos tus datos con terceros sin tu consentimiento, a menos que sea requerido por ley.  Utilizamos cookies para mejorar la funcionalidad del sitio y recopilar datos de uso anónimos. Puedes optar por no recibir comunicaciones promocionales. No nos hacemos responsables por el contenido de enlaces externos. Siempre protegemos tus datos, pero no podemos garantizar la seguridad absoluta.\n\nAl utilizar nuestro servicio, aceptas eximirnos de cualquier responsabilidad por pérdida o daño. Si tienes alguna pregunta, contáctanos. Al continuar, aceptas estos términos y condiciones."
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <LinearLayout
+        android:layout_width="396dp"
+        android:layout_height="157dp"
+        android:background="#A6CDE4"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#A6CDE4"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+</androidx.constraintlayout.widget.ConstraintLayout>
