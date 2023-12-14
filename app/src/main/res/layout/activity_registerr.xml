@@ -254,17 +254,43 @@
         android:id="@+id/confirmarr"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto"
+        android:background="#90C8F0"
+        android:fontFamily="@font/roboto_light"
         android:includeFontPadding="false"
         android:padding="15dp"
         android:text="Registro"
         android:textAllCaps="false"
         android:textColor="#000000"
         android:textSize="20sp"
+        app:backgroundTint="#90C8F0"
         app:cornerRadius="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/til_pass2"
         app:layout_constraintStart_toStartOf="@+id/til_pass2"
+        app:layout_constraintTop_toBottomOf="@+id/PoliticaPrivacidad" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="Al confirmar acepta los"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/til_confirmarcontrasenya" />
+
+    <TextView
+        android:id="@+id/PoliticaPrivacidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/roboto"
+        android:onClick="abrirTerminos"
+        android:text="términos y condiciones de la política de privacidad"
+        android:textColor="#3F51B5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
