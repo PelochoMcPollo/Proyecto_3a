@@ -53,6 +53,16 @@
             android:exported="false"
             android:theme="@style/Theme.Proyecto_3a"/>
 
+        <activity
+            android:name=".MainPage"
+            android:exported="false"
+            android:theme="@style/Theme.Proyecto_3a"/>
+
+        <activity
+            android:name=".TerminosPrivacidad"
+            android:exported="false"
+            android:theme="@style/Theme.Proyecto_3a"/>
+
         <activity android:name=".EditarPerfil"
             android:theme="@style/Theme.Proyecto_3a"/>
         <activity android:name=".CambiarContrasenya"

@@ -171,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("mingzi", resultado.getDevice().getAddress());
                 //Comprobar si el dispositivo escaneado coincide con el dispositivo buscado por nombre.
                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
+                   Toast.makeText(getApplicationContext(), "conectado con QR CODE",
+                           Toast.LENGTH_LONG).show();
+                   Log.d("BBBBBBB", "  buscarEsteDispositivoBTLE(): onScanResult() ");
                     byte[] bytes = resultado.getScanRecord().getBytes();
                     TramaIBeacon tib = new TramaIBeacon(bytes);
                     // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
@@ -264,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
     //-------------se llama sin button -----------------------------
     public void botonBuscarNuestroDispositivoBTLEPulsadoV2(String nombre) {
         // Inicia la búsqueda de un dispositivo Bluetooth LE específico.
-        this.buscarEsteDispositivoBTLE("nombre");
+        this.buscarEsteDispositivoBTLE(nombre);
     }
 
 
@@ -391,6 +394,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void mainPage(View view) {
+        startActivity(new Intent(this, MainPage.class));
+    }
+
     public void lanzarRegistrate(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
@@ -419,7 +426,6 @@ public class MainActivity extends AppCompatActivity {
                 // Handle the case where scanning was canceled or failed
                 // ...
                 Log.e("escaneo correcto","MAAAAAAAL");
-
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
