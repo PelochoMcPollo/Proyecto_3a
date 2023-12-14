@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
     <androidx.cardview.widget.CardView
         android:id="@+id/blueBox1"
         android:layout_width="346dp"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         app:cardBackgroundColor="#a6cde4"
@@ -24,7 +29,7 @@
 
         <View
             android:layout_width="335dp"
-            android:layout_height="240dp"
+            android:layout_height="190dp"
             android:layout_gravity="center"
             android:background="@drawable/rounded_corner" />
 
@@ -47,7 +52,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/blueBox2"
         android:layout_width="346dp"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         app:cardBackgroundColor="#a6cde4"
         app:cardCornerRadius="25dp"
@@ -60,7 +65,7 @@
 
         <View
             android:layout_width="335dp"
-            android:layout_height="240dp"
+            android:layout_height="190dp"
             android:layout_gravity="center"
             android:background="@drawable/rounded_corner" />
 
@@ -84,7 +89,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/blueBox3"
         android:layout_width="346dp"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         app:cardBackgroundColor="#a6cde4"
         app:cardCornerRadius="25dp"
@@ -97,7 +102,7 @@
 
         <View
             android:layout_width="335dp"
-            android:layout_height="240dp"
+            android:layout_height="190dp"
             android:layout_gravity="center"
             android:background="@drawable/rounded_corner" />
     </androidx.cardview.widget.CardView>
@@ -119,7 +124,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/blueBox4"
         android:layout_width="346dp"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         app:cardBackgroundColor="#a6cde4"
         app:cardCornerRadius="25dp"
@@ -132,7 +137,7 @@
 
         <View
             android:layout_width="335dp"
-            android:layout_height="240dp"
+            android:layout_height="190dp"
             android:layout_gravity="center"
             android:background="@drawable/rounded_corner" />
     </androidx.cardview.widget.CardView>
@@ -154,7 +159,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/blueBox5"
         android:layout_width="346dp"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         app:cardBackgroundColor="#a6cde4"
         app:cardCornerRadius="25dp"
@@ -167,7 +172,7 @@
 
         <View
             android:layout_width="335dp"
-            android:layout_height="240dp"
+            android:layout_height="190dp"
             android:layout_gravity="center"
             android:background="@drawable/rounded_corner" />
     </androidx.cardview.widget.CardView>
@@ -272,7 +277,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/opciones" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
 
 
 
