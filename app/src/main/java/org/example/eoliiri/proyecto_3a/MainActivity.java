@@ -3,6 +3,8 @@ package org.example.eoliiri.proyecto_3a;
 // ------------------------------------------------------------------
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -11,6 +13,7 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.ParcelUuid;
@@ -45,12 +48,12 @@ import java.util.UUID;
 // ------------------------------------------------------------------
 
 public class MainActivity extends AppCompatActivity {
+    private NotificationManager notificationManager;
+    static final String CANAL_ID = "Alertas";
+    static final int NOTIFICACION_ID = 1;
 
     //----------------detectar cambios en el textView para alertas----
-
-
     private int scanResultCount = 0;
-
     TextView co2, temp; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
@@ -186,6 +189,12 @@ public class MainActivity extends AppCompatActivity {
 
                         co2p = String.valueOf(Utilidades.bytesToInt(tib.getMajor()));
                         tempp = String.valueOf(Utilidades.bytesToInt(tib.getMinor()));
+
+                        if (Integer.parseInt(co2p) > 180 && Integer.parseInt(co2p) <= 240) {
+                            lanzarNoti(1);
+                        } else if (Integer.parseInt(co2p) > 240) {
+                            lanzarNoti(2);
+                        }
 
                         co2.setText(co2p);
                         temp.setText(tempp);
@@ -334,6 +343,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        notificationManager = (NotificationManager)
+                getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    CANAL_ID, "Servicio de Música",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("Descripcion del canal");
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
         sesionManager = new SesionManager(this);
 
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
@@ -376,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (sesionManager.SesionIniciada()){
             try {
-                startActivity(new Intent(this, Perfil.class));
+                startActivity(new Intent(this, Mapa.class));
             }
             catch (Exception e){
                 Log.d("TAG", e.toString());
@@ -389,6 +408,11 @@ public class MainActivity extends AppCompatActivity {
             catch (Exception e){
                 Log.d("TAG", e.toString());
             }
+    }
+
+    public void lanzarMapa(View view) {
+        Intent intent = new Intent(this, MapaPublico.class);
+        startActivity(intent);
     }
 
     public void onInformacion(View view) {
@@ -432,6 +456,14 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    public void lanzarNoti(int caso){
+        if (caso==1){
+            NotificationHelper.mostrarNotificacion(this, "Alerta", "El nivel de riesgo de calidad del aire es moderado");
+        }else{
+            NotificationHelper.mostrarNotificacion(this, "Alerta", "El nivel de riesgo de calidad del aire es alto");
         }
     }
 
