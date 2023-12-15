@@ -29,7 +29,7 @@
         app:srcCompat="@drawable/calendario" />
 
     <ImageView
-        android:id="@+id/imageView20"
+        android:id="@+id/colorCo2"
         android:layout_width="194dp"
         android:layout_height="112dp"
         app:layout_constraintBottom_toBottomOf="@+id/calidadAire"
@@ -213,7 +213,7 @@
         android:text="Desde:"
         app:layout_constraintEnd_toStartOf="@+id/calidadAire"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView20" />
+        app:layout_constraintTop_toBottomOf="@+id/colorCo2" />
 
     <TextView
         android:id="@+id/hasta"
@@ -223,7 +223,7 @@
         android:fontFamily="@font/roboto_bold"
         android:text="Hasta:"
         app:layout_constraintStart_toEndOf="@+id/fechaDesde"
-        app:layout_constraintTop_toBottomOf="@+id/imageView20" />
+        app:layout_constraintTop_toBottomOf="@+id/colorCo2" />
 
     <TextView
         android:id="@+id/fechaDesde"
