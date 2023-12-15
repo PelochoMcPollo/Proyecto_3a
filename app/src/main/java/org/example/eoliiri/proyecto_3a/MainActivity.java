@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (sesionManager.SesionIniciada()){
             try {
-                startActivity(new Intent(this, Perfil.class));
+                startActivity(new Intent(this, Mapa.class));
             }
             catch (Exception e){
                 Log.d("TAG", e.toString());
@@ -386,6 +386,11 @@ public class MainActivity extends AppCompatActivity {
             catch (Exception e){
                 Log.d("TAG", e.toString());
             }
+    }
+
+    public void lanzarMapa(View view) {
+        Intent intent = new Intent(this, MapaPublico.class);
+        startActivity(intent);
     }
 
     public void onInformacion(View view) {

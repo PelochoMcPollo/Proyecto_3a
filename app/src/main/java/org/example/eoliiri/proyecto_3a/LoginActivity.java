@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         btlogin = findViewById(R.id.confirmarr);
         btlogin.setText("Iniciar sesión");
         registro = findViewById(R.id.textView4);
-        recuperarcontrasenya = findViewById(R.id.textView6);
+        recuperarcontrasenya = findViewById(R.id.recuperarcontrasenya);
 
         // Configura un escuchador para el botón de inicio de sesión
         btlogin.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 email = tilCorreo.getEditText().getText().toString().trim();
                 password = tilContraseña.getEditText().getText().toString().trim();
                 // Llama al método Validar con la URL del servidor como argumento
-                Validar("http://192.168.1.49/proyecto_3a/src/api/validarusuario.php");
+                Validar("http://10.237.24.113/proyecto_3a/src/api/validarusuario.php");
             }
         });
         registro.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (!response.isEmpty()) {
                         sesionManager.guardarCredenciales(email, password);
                         Toast.makeText(LoginActivity.this, "Inicio de sesion correcto", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, Perfil.class));
+                        startActivity(new Intent(LoginActivity.this, Mapa.class));
                         finish();
                     } else {
                         // Si el correo o la contraseña son incorrectos, muestra un mensaje de error en el TextInputLayout

@@ -8,14 +8,17 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +27,7 @@ import java.util.Map;
  * mediciones de CO2 y temperatura.
  */
 public class Server {
-    private static String ip = "192.168.1.49";
+    private static String ip = "10.237.24.113";
 
     // URL del servidor al que se enviarán las mediciones.
     private static final String Url1 = "http://"+ip+"/proyecto_3a/src/api/guardarprueba.php";
@@ -34,11 +37,17 @@ public class Server {
     private  static  final  String UrlActualizarTelefono = "http://"+ip+"/proyecto_3a/src/api/actualizartelefono.php?email=";
     private  static  final  String UrlCambiarContrasenya = "http://"+ip+"/proyecto_3a/src/api/cambiarcontrasenyaapp.php?email=";
     private  static  final  String UrlRecuperarContrasenya = "http://"+ip+"/proyecto_3a/src/api/recuperarcontrasenya.php?email=";
+    private  static  final  String UrlRecuperarMedicionesTodas = "http://"+ip+"/proyecto_3a/src/api/recuperartodasmediciones.php";
+    private static final String UrlRecuperarMedicionesUsuario = "http://"+ip+"/proyecto_3a/src/api/recuperartodasmedicionesusuario.php?email=";
 
     private static String nombre,contrasenya,telefono,email;
 
+    private static ArrayList<Medicion>  medicionesTodas = new ArrayList<>();
+
     private  static  UsuarioRecuperadoListener usuarioRecuperadoListener;
     private  static  TelefonoRecuperadoListener telefonoRecuperadoListener;
+    private static MedicionesTodasRecuperadoListener medicionesTodasRecuperadoListener;
+    private static MedicionesUsuarioRecuperadoListener medicionesUsuarioRecuperadoListener;
 
 
 
@@ -173,6 +182,104 @@ public class Server {
         );
         requestQueue.add(jsonObjectRequest);
 
+    }
+
+    public static void recuperarMedicionesTodas(RequestQueue requestQueue) {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,    // Método HTTP (GET).
+                UrlRecuperarMedicionesTodas,  // URL del servidor.
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            // Crear un array de mediciones para almacenar los datos recuperados
+                            ArrayList<Medicion> mediciones = new ArrayList<>();
+
+                            // Iterar sobre cada objeto en el JSONArray de respuesta
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject medicionObj = response.getJSONObject(i);
+
+                                // Aquí debes parsear cada objeto JSON y crear una instancia de "Medicion"
+                                // Supongamos que tienes una clase Medicion con campos como "id", "valor", "fecha", etc.
+                                String idMedicion = medicionObj.getString("idmedicion");
+                                String instante = medicionObj.getString("instante");
+                                String latitud = medicionObj.getString("latitud");
+                                String longitud = medicionObj.getString("longitud");
+                                String valor = medicionObj.getString("valor");
+                                String idContaminante = medicionObj.getString("idcontaminante");
+
+
+                                // Crea una instancia de Medicion y agrega a la lista de mediciones
+                                Medicion medicion = new Medicion(idMedicion, instante, latitud, longitud, valor, idContaminante);
+                                mediciones.add(medicion);
+                            }
+
+                            // Una vez que se han recopilado todas las mediciones, notifica al listener, si existe
+                            if (medicionesTodasRecuperadoListener != null) {
+                                medicionesTodasRecuperadoListener.onMedicionesTodasRecuperado(mediciones);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Manejar errores de solicitud
+                    }
+                }
+        );
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public static void recuperarMedicionesUsuario(RequestQueue requestQueue, String correo) {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,    // Método HTTP (GET).
+                UrlRecuperarMedicionesUsuario.concat(correo),  // URL del servidor.
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            // Crear un array de mediciones para almacenar los datos recuperados
+                            ArrayList<Medicion> mediciones = new ArrayList<>();
+
+                            // Iterar sobre cada objeto en el JSONArray de respuesta
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject medicionObj = response.getJSONObject(i);
+
+                                // Aquí debes parsear cada objeto JSON y crear una instancia de "Medicion"
+                                // Supongamos que tienes una clase Medicion con campos como "id", "valor", "fecha", etc.
+                                String idMedicion = medicionObj.getString("idmedicion");
+                                String instante = medicionObj.getString("instante");
+                                String latitud = medicionObj.getString("latitud");
+                                String longitud = medicionObj.getString("longitud");
+                                String valor = medicionObj.getString("valor");
+                                String idContaminante = medicionObj.getString("idcontaminante");
+
+                                // Crea una instancia de Medicion y agrega a la lista de mediciones
+                                Medicion medicion = new Medicion(idMedicion, instante, latitud, longitud, valor, idContaminante);
+                                mediciones.add(medicion);
+                            }
+                            // Una vez que se han recopilado todas las mediciones, notifica al listener, si existe
+                            if (medicionesUsuarioRecuperadoListener != null) {
+                                medicionesUsuarioRecuperadoListener.onMedicionesUsuarioRecuperado(mediciones);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Manejar errores de solicitud
+                    }
+                }
+        );
+        requestQueue.add(jsonArrayRequest);
     }
 
     /**
@@ -360,6 +467,14 @@ public class Server {
     }
     public static void setTelefonoRecuperadoListener(TelefonoRecuperadoListener listener){
         telefonoRecuperadoListener = listener;
+    }
+
+    public static void setMedicionesTodasRecuperadoListener(MedicionesTodasRecuperadoListener listener){
+         medicionesTodasRecuperadoListener = listener;
+    }
+
+    public static void setMedicionesUsuarioRecuperadoListener(MedicionesUsuarioRecuperadoListener listener){
+        medicionesUsuarioRecuperadoListener = listener;
     }
 
     /**
