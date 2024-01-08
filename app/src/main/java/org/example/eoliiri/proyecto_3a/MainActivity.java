@@ -9,6 +9,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     // Escáner de dispositivos Bluetooth LE y callback para el escaneo.
     private BluetoothLeScanner elEscanner;
     private ScanCallback callbackDelEscaneo = null;
+
+    private Context appContext = this;
 
     // Método para buscar todos los dispositivos Bluetooth LE.
     @SuppressLint("MissingPermission")
@@ -171,15 +174,52 @@ public class MainActivity extends AppCompatActivity {
                 super.onScanResult(callbackType, resultado);
                 Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
                 Log.d("cishu", String.valueOf(scanResultCount));
-                Log.d("mingzi", resultado.getDevice().getAddress());
-                //Comprobar si el dispositivo escaneado coincide con el dispositivo buscado por nombre.
+
+
+
+
+               //Si mueves estas cuatro líneas de código aquí, podrás mostrar los datos.
+               //Esto se debe a que si el código está en esta ubicación, no estará buscando en nuestros sensores,
+               //sino en todas las señales de Bluetooth que se pueden encontrar alrededor.
+
+               /* byte[] bytes = resultado.getScanRecord().getBytes();
+
+                    TramaIBeacon tib = new TramaIBeacon(bytes);
+
+                   //计算距离
+                   double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
+
+                   // 显示距离在 distanciavalue TextView 上
+                   mostrarDistancia(distancia);*/
+
+
+
+
+
+
+
                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
                    Toast.makeText(getApplicationContext(), "conectado con QR CODE",
                            Toast.LENGTH_LONG).show();
                    Log.d("BBBBBBB", "  buscarEsteDispositivoBTLE(): onScanResult() ");
+
+                   mostrarInformacionDispositivoBTLE(resultado);
                     byte[] bytes = resultado.getScanRecord().getBytes();
+
                     TramaIBeacon tib = new TramaIBeacon(bytes);
+
+                   scanResultCount = 0;
+
+                   //计算距离
+                   double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
+
+                   // 显示距离在 distanciavalue TextView 上
+                   mostrarDistancia(distancia);
+
+
+
                     // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
+
                    if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor())))) {
                         Log.d("Pelochas", co2p);
                         Log.d("Pelochas", tempp);
@@ -189,20 +229,31 @@ public class MainActivity extends AppCompatActivity {
 
                         co2.setText(co2p);
                         temp.setText(tempp);
-                       scanResultCount = 0;
-                        Server.crearPrueba(co2p, tempp, requestQueue);
+
+
+
+                       int co2Value = Integer.parseInt(co2p);
+                       if (co2Value > 500) {
+                           CO2NotificationManager.showCO2AlertNotification(appContext, co2Value);
+                       } else if (co2Value < 500) {
+
+                       }
+
+
+                       Server.crearPrueba(co2p, tempp, requestQueue);
+
                     }
-                }
+               }
 
                else {
                    // Si la condición no se cumple, incrementar el contador.
 
                    scanResultCount++;}
 
-                // Si el contador alcanza 50, mostrar la notificación.
-                if (scanResultCount >= 200) {
-                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía beacons al móvil");
-                    // También puedes reiniciar el contador aquí si deseas que continúe la cuenta.
+                // Si el contador alcanza 200, mostrar la notificación.
+                if (scanResultCount >= 500) {
+                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no  envía datos al móvil");
+                    // También puedes reiniciar el contador aquí si deseas que continúe la cuenta.hhhh
                     scanResultCount = 0;
                 }
 
@@ -221,8 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onScanFailed(errorCode);
                 Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanFailed() ");
 
-                // 在 MainActivity 中调用 mostrarNotificacion，使用 MainActivity.this 作为 Context
-                NotificationHelper.mostrarNotificacion(MainActivity.this, "Sensor dañado", "El sensor no envía beacons al móvil");
+
             }
 
         };
@@ -237,6 +287,40 @@ public class MainActivity extends AppCompatActivity {
         //      + " -> " + Utilidades.stringToUUID( dispositivoBuscado ) );
         this.elEscanner.startScan(this.callbackDelEscaneo);
     } // ()
+
+
+
+    // 计算距离的方法 Cómo calcular la distancia
+    private double calcularDistancia(int txPower, int rssi) {
+        // 根据信号强度衰减模型计算距离
+        double distancia = Math.pow(10d, ((double) (txPower - rssi)) / (80));
+
+        // 根据条件调整距离
+        if (distancia > 0.5 && distancia < 1) {
+            distancia /= 3;
+        }
+
+        if(distancia < 2){
+            distancia /= 2;
+        }
+
+        return distancia;
+    }
+
+
+    // 显示距离的方法 Cómo mostrar la distancia
+    private void mostrarDistancia(double distancia) {
+        // 将距离显示在 distanciavalue 的 TextView 上    Mostrar distancia en TextView de distanciavalue
+        TextView distanciavalue = findViewById(R.id.distanciavalue);
+        if(distancia<2){
+            distanciavalue.setText("Estas al lado de lsensor");
+        } else if (distancia>2&& distancia<5) {
+            distanciavalue.setText("Estas al lado de lsensor");
+        } else if (distancia>5) {
+           distanciavalue.setText("estas lejos del sensor");
+        }
+        distanciavalue.setText(String.format("%.2f", distancia) + " meters");
+    }
 
     // --------------------------------------------------------------
     // Detiene la búsqueda de dispositivos Bluetooth LE.
@@ -429,6 +513,7 @@ public class MainActivity extends AppCompatActivity {
                 // Handle the case where scanning was canceled or failed
                 // ...
                 Log.e("escaneo correcto","MAAAAAAAL");
+
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -24,7 +24,7 @@ import java.util.Map;
  * mediciones de CO2 y temperatura.
  */
 public class Server {
-    private static String ip = "192.168.148.194";
+    private static String ip = "192.168.1.49";
 
     // URL del servidor al que se enviarán las mediciones.
     private static final String Url1 = "http://"+ip+"/proyecto_3a/src/api/guardarprueba.php";
@@ -351,9 +351,9 @@ public class Server {
         Server.recuperarUsuario(requestQueue,correo);
         Server.recuperarTelefono(requestQueue,correo);
 
+
+
     }
-
-
 
     public static void setUsuarioRecuperadoListener(UsuarioRecuperadoListener listener) {
         usuarioRecuperadoListener = listener;
