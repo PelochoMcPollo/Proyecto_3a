@@ -2,10 +2,14 @@ package org.example.eoliiri.proyecto_3a;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class MainPage extends AppCompatActivity {
     TextView co2,temperatura,riesgo;
@@ -20,6 +24,8 @@ public class MainPage extends AppCompatActivity {
         temperatura=findViewById(R.id.Temp);
         riesgo=findViewById(R.id.nivelRiesgo);
         co2Image=findViewById(R.id.colorCo2);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         /*co2.setText(co2p);
         temperatura.setText(tempp);
         riesgo.setText();*/
@@ -32,4 +38,25 @@ public class MainPage extends AppCompatActivity {
             co2Image.setImageResource(R.drawable.rojo);
         }
     }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.acercaDe) {
+            //lanzarAcercaDe(null);
+            return true;
+        }
+        if (id == R.id.menu_perfil) {
+            //lanzarEditarPerfil(null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
 }

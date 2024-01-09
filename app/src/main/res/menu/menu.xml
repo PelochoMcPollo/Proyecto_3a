@@ -14,16 +14,16 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="5"
         android:title="Acerca de"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/descubrir"
         android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="5"
         android:title="Descuubrir"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_perfil"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/usuario"
         android:orderInCategory="115"
         android:title="Buscar"
         app:showAsAction="always|collapseActionView" />

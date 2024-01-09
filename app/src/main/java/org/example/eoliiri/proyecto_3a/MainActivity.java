@@ -419,8 +419,7 @@ public class MainActivity extends AppCompatActivity {
     // Método llamado al crear la actividad.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -430,6 +429,9 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         Log.d(ETIQUETA_LOG, "onCreate(): comienza");
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Inicializa el Bluetooth y solicita permisos si es necesario.
         inicializarBlueTooth();
@@ -544,6 +546,9 @@ public class MainActivity extends AppCompatActivity {
             //lanzarEditarPerfil(null);
             return true;
         }
+        if(id == R.id.descubrir){
+            lanzarEditarDescubrir(null);
+        }
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -552,6 +557,10 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+    public void lanzarEditarDescubrir(View view){
+        Intent i = new Intent(this,informacion.class);
+        startActivity(i);
     }
 
 }
