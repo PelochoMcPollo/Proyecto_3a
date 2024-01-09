@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A6CDE4"
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/acercaDe"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:orderInCategory="5"
+        android:title="Acerca de"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/descubrir"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:orderInCategory="5"
+        android:title="Descuubrir"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_perfil"
+        android:icon="@drawable/logo"
+        android:orderInCategory="115"
+        android:title="Buscar"
+        app:showAsAction="always|collapseActionView" />
+
+</menu>
+
+
+

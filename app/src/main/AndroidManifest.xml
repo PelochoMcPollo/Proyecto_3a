@@ -12,7 +12,6 @@
 
 
 
-
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
 
 
@@ -47,7 +46,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity"
-            android:theme="@style/Theme.Proyecto_3a"/>
+            android:theme="@style/Theme.Proyecto_3a"
+            android:exported="true">
+
+        </activity>
         <activity android:name=".Perfil"
             android:theme="@style/Theme.Proyecto_3a"/>
 
