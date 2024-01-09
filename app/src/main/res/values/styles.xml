@@ -36,4 +36,17 @@
         <item name="android:background">@color/white</item>
     </style>
 
+    <!-- res/values/styles.xml -->
+    <!-- res/values/styles.xml -->
+
+    <style name="toolbar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your toolbar style here -->
+        <item name="colorPrimary">#A6CDE4</item>
+        <item name="colorPrimaryDark">#1D1B1B</item>
+    </style>
+
+
+
+
+
 </resources>

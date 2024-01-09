@@ -1,7 +1,6 @@
 package org.example.eoliiri.proyecto_3a;
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -10,30 +9,24 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.ParcelUuid;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -50,8 +43,8 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
+
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
@@ -62,18 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private int scanResultCount = 0;
-    private int toastQR = 0;
-    private int valoresco2;
-    int c = 0;
 
     TextView co2, temp; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
-    SesionManager sesionManager; // Gestor de sesiones para almacenar credenciales de usuario.
 
-    private static final int MAX_VALORES_CO2 = 10; // Cambia el tamaño según tu preferencia
-    private String[] ultimosValoresCO2 = new String[MAX_VALORES_CO2];
-    private int indiceValoresCO2 = 0; // Índice para controlar la posición en el array
+    SesionManager sesionManager; // Gestor de sesiones para almacenar credenciales de usuario.
 
     // Etiquetas para mensajes de registro.
     private static final String ETIQUETA_LOG = ">>>>";
@@ -84,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     // Escáner de dispositivos Bluetooth LE y callback para el escaneo.
     private BluetoothLeScanner elEscanner;
     private ScanCallback callbackDelEscaneo = null;
+
+    private Context appContext = this;
 
     // Método para buscar todos los dispositivos Bluetooth LE.
     @SuppressLint("MissingPermission")
@@ -176,191 +165,165 @@ public class MainActivity extends AppCompatActivity {
     // --------------------------------------------------------------
     @SuppressLint("MissingPermission")
     private void buscarEsteDispositivoBTLE(final String dispositivoBuscado) {
-        Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): empieza");
+        Log.d(ETIQUETA_LOG, " buscarEsteDispositivoBTLE(): empieza ");
 
-        Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): instalamos scan callback");
+        Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): instalamos scan callback ");
 
+        // super.onScanResult(ScanSettings.SCAN_MODE_LOW_LATENCY, result); para ahorro de energía
+
+        // Configurar un ScanCallback para escanear dispositivos Bluetooth LE.
         this.callbackDelEscaneo = new ScanCallback() {
             @Override
             public void onScanResult(int callbackType, ScanResult resultado) {
                 super.onScanResult(callbackType, resultado);
-
-                Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): onScanResult()");
+                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
                 Log.d("cishu", String.valueOf(scanResultCount));
 
-                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
-                    if (toastQR == 0) {
-                        Toast.makeText(getApplicationContext(), "Conectado correctamente",
-                                Toast.LENGTH_LONG).show();
-                        toastQR = 1;
-                        Server.guardarSonda(requestQueue);
-                        Server.guardarUsuarioSonda(requestQueue, sesionManager.getEmail());
-                    }
 
-                    mostrarInformacionDispositivoBTLE(resultado);
+
+
+               //Si mueves estas cuatro líneas de código aquí, podrás mostrar los datos.
+               //Esto se debe a que si el código está en esta ubicación, no estará buscando en nuestros sensores,
+               //sino en todas las señales de Bluetooth que se pueden encontrar alrededor.
+
+               /* byte[] bytes = resultado.getScanRecord().getBytes();
+
+                    TramaIBeacon tib = new TramaIBeacon(bytes);
+
+                   //计算距离
+                   double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
+
+                   // 显示距离在 distanciavalue TextView 上
+                   mostrarDistancia(distancia);*/
+
+
+
+
+
+
+
+               if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
+                   Toast.makeText(getApplicationContext(), "conectado con QR CODE",
+                           Toast.LENGTH_LONG).show();
+                   Log.d("BBBBBBB", "  buscarEsteDispositivoBTLE(): onScanResult() ");
+
+                   mostrarInformacionDispositivoBTLE(resultado);
                     byte[] bytes = resultado.getScanRecord().getBytes();
 
                     TramaIBeacon tib = new TramaIBeacon(bytes);
 
-                    scanResultCount = 0;
+                   scanResultCount = 0;
 
-                    double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
-                    Log.d("Pelochas", "distancia: " + String.valueOf(distancia));
+                   //计算距离
+                   double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
 
-                    if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor())))) {
+                   // 显示距离在 distanciavalue TextView 上
+                   mostrarDistancia(distancia);
+
+
+
+                    // Verificar si el valor CO2 ha cambiado y actualizar la vista y la base de datos.
+
+                   if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor())))) {
+                        Log.d("Pelochas", co2p);
+                        Log.d("Pelochas", tempp);
+
                         co2p = String.valueOf(Utilidades.bytesToInt(tib.getMajor()));
                         tempp = String.valueOf(Utilidades.bytesToInt(tib.getMinor()));
 
                         co2.setText(co2p);
                         temp.setText(tempp);
 
-                        ultimosValoresCO2[indiceValoresCO2] = co2p;
 
-                        Instant instanteActual = Instant.now();
-                        ZonedDateTime zonedDateTime = instanteActual.atZone(ZoneId.of("Europe/Madrid"));
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                        String fechaFormateada = formatter.format(zonedDateTime);
-                        Log.d("pelochas", "fecha: " + fechaFormateada);
 
-                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        LocationListener locationListener = new LocationListener() {
-                            public void onLocationChanged(Location location) {
-                                double latitud = location.getLatitude();
-                                double longitud = location.getLongitude();
+                       int co2Value = Integer.parseInt(co2p);
+                       if (co2Value > 500) {
+                           CO2NotificationManager.showCO2AlertNotification(appContext, co2Value);
+                       } else if (co2Value < 500) {
 
-                                Server.guardarMedicion(fechaFormateada, String.valueOf(latitud), String.valueOf(longitud), co2p, String.valueOf(1), requestQueue, new MedicionRecuperadoListener() {
-                                    @Override
-                                    public void medicionGuardada() {
-                                        Log.d("pelochas", String.valueOf(c));
-                                        c++;
-                                        Server.setSondaRecuperadoListener(new SondaRecuperadoListener() {
-                                            @Override
-                                            public void onSondaRecuperado() {
-                                                Log.d("pelochas", Server.sonda);
-                                                Log.d("pelochas", "hola");
-                                                Server.setUsuarioMedicionListener(new UsuarioMeidicionRecuperadoListener() {
-                                                    @Override
-                                                    public void onUsuarioMedicionListener() {
-                                                        Log.d("pelochas", Server.sonda);
-                                                        Log.d("pelochas", Server.idmedicion);
-                                                        Server.guardarSondaMedidion(requestQueue, Server.sonda, Server.idmedicion);
-                                                    }
-                                                });
-                                                Server.recuperarUsuarioMedicion(requestQueue, sesionManager.getEmail());
-                                            }
-                                        });
-                                        Server.recuperarSonda(requestQueue);
-                                    }
-                                });
+                       }
 
-                            }
-                        };
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+                       Server.crearPrueba(co2p, tempp, requestQueue);
+
                     }
-                } else {
-                    scanResultCount++;
-                }
+               }
 
+               else {
+                   // Si la condición no se cumple, incrementar el contador.
+
+                   scanResultCount++;}
+
+                // Si el contador alcanza 200, mostrar la notificación.
                 if (scanResultCount >= 500) {
-                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía beacons al móvil");
+                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no  envía datos al móvil");
+                    // También puedes reiniciar el contador aquí si deseas que continúe la cuenta.hhhh
                     scanResultCount = 0;
                 }
+
             }
+
 
             @Override
             public void onBatchScanResults(List<ScanResult> results) {
                 super.onBatchScanResults(results);
-                Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): onBatchScanResults()");
+                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onBatchScanResults() ");
+
             }
 
             @Override
             public void onScanFailed(int errorCode) {
                 super.onScanFailed(errorCode);
-                Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): onScanFailed()");
+                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanFailed() ");
+
+
             }
+
         };
 
+        // Crear un filtro para buscar dispositivos con un nombre específico.
         ScanFilter sf = new ScanFilter.Builder().setDeviceName(dispositivoBuscado).build();
         Log.d("Hola", sf.toString());
 
-        Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): empezamos a escanear buscando: " + dispositivoBuscado);
+        // Iniciar el escaneo para buscar el dispositivo específico por nombre.
+        Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): empezamos a escanear buscando: " + dispositivoBuscado);
+        //Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): empezamos a escanear buscando: " + dispositivoBuscado
+        //      + " -> " + Utilidades.stringToUUID( dispositivoBuscado ) );
         this.elEscanner.startScan(this.callbackDelEscaneo);
-    }
-
-    public interface MedicionCallback {
-        void medicionGuardada();
-    }
-
-    private void medicionesRandoms() {
-        for (int i = 1; i <= 20; i++) {
-
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            int finalI = i;
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    Instant instanteActual = Instant.now();
-                    ZonedDateTime zonedDateTime = instanteActual.atZone(ZoneId.of("Europe/Madrid"));
-                    ZonedDateTime zonedDateTime1 = zonedDateTime.plusHours(finalI);
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    String fechaFormateada = formatter.format(zonedDateTime1);
-                    Log.d("pelochas", "fecha: " + fechaFormateada);
-
-                    Random random = new Random();
-                    int numeroAleatorio = random.nextInt(301);
-
-                    double latitud = location.getLatitude();
-                    double longitud = location.getLongitude();
-
-                    double variacionLatitud = Math.random() * 0.02 - 0.01; // Variación de +/- 0.01 para la latitud
-                    double variacionLongitud = Math.random() * 0.02 - 0.01;
-
-                    double latitudNueva = latitud + variacionLatitud;
-                    double longitudNueva = longitud + variacionLongitud;
-
-                    Server.guardarMedicion(fechaFormateada, String.valueOf(latitudNueva), String.valueOf(longitudNueva), String.valueOf(numeroAleatorio), String.valueOf(1), requestQueue, new MedicionRecuperadoListener() {
-                        @Override
-                        public void medicionGuardada() {
-                            // Aquí puedes realizar acciones después de que la medición se haya guardado
-                        }
-                    });
-                }
-
-                // Otros métodos de LocationListener que podrían necesitar implementación, como onProviderEnabled, onProviderDisabled, etc.
-            });
-        }
-    }
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);}
+    } // ()
 
 
 
     // 计算距离的方法 Cómo calcular la distancia
     private double calcularDistancia(int txPower, int rssi) {
         // 根据信号强度衰减模型计算距离
-        return Math.pow(10d, ((double) (txPower - rssi)) / (90 * 4));
+        double distancia = Math.pow(10d, ((double) (txPower - rssi)) / (80));
+
+        // 根据条件调整距离
+        if (distancia > 0.5 && distancia < 1) {
+            distancia /= 3;
+        }
+
+        if(distancia < 2){
+            distancia /= 2;
+        }
+
+        return distancia;
     }
 
-    // 显示距离的方法 Cómo mostrar la distancia
-        private void mostrarDistancia(double distancia) {
-        // 将距离显示在 distanciavalue 的 TextView 上    Mostrar distancia en TextView de distanciavalue
-        /*TextView distanciavalue = findViewById(R.id.distanciavalue);
-        if (distancia < 1) {
-            distanciavalue.setText("Cerca");
-            //distanciavalue.setText(String.format("%.2f", distancia) + " meters");
-        } else {
-            distanciavalue.setText("Lejos");
-        }*/
 
+    // 显示距离的方法 Cómo mostrar la distancia
+    private void mostrarDistancia(double distancia) {
+        // 将距离显示在 distanciavalue 的 TextView 上    Mostrar distancia en TextView de distanciavalue
+        TextView distanciavalue = findViewById(R.id.distanciavalue);
+        if(distancia<2){
+            distanciavalue.setText("Estas al lado de lsensor");
+        } else if (distancia>2&& distancia<5) {
+            distanciavalue.setText("Estas al lado de lsensor");
+        } else if (distancia>5) {
+           distanciavalue.setText("estas lejos del sensor");
+        }
+        distanciavalue.setText(String.format("%.2f", distancia) + " meters");
     }
 
     // --------------------------------------------------------------
@@ -391,7 +354,6 @@ public class MainActivity extends AppCompatActivity {
         // Inicia la búsqueda de un dispositivo Bluetooth LE específico.
         this.buscarEsteDispositivoBTLE("PER PUIGDEMOOONT");
     } // ()
-
     //--------------------version 2 de :botonBuscarNuestroDispositivoBTLEPulsado----------------------
     //-------------se llama sin button -----------------------------
     public void botonBuscarNuestroDispositivoBTLEPulsadoV2(String nombre) {
@@ -457,6 +419,7 @@ public class MainActivity extends AppCompatActivity {
     // Método llamado al crear la actividad.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -467,17 +430,18 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(ETIQUETA_LOG, "onCreate(): comienza");
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         // Inicializa el Bluetooth y solicita permisos si es necesario.
         inicializarBlueTooth();
 
         Log.d(ETIQUETA_LOG, "onCreate(): termina");
 
         // Asigna los TextView de la interfaz a las variables co2 y temp.
+
         co2 = findViewById(R.id.CO2); //
         temp =findViewById(R.id.Temp);
-        medicionesRandoms();
-
-
         //alerta cuando cambia el textView de co2
 
     } // onCreate()
@@ -525,6 +489,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void mainPage(View view) {
+        startActivity(new Intent(this, MainPage.class));
+    }
+
     public void lanzarRegistrate(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
@@ -558,6 +526,41 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+    //----------------------------------------------
+    //------------------toolbar--------------------
+    //---------------  MENU -----------------
+   /* @Override public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true; /** true -> el menú ya está visible*/
+
+
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.acercaDe) {
+            //lanzarAcercaDe(null);
+            return true;
+        }
+        if (id == R.id.menu_perfil) {
+            //lanzarEditarPerfil(null);
+            return true;
+        }
+        if(id == R.id.descubrir){
+            lanzarEditarDescubrir(null);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    public void lanzarEditarDescubrir(View view){
+        Intent i = new Intent(this,informacion.class);
+        startActivity(i);
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.Map;
 public class VerificarActivity extends AppCompatActivity {
 
     EditText inputcodigo;
-    String url = "http://192.168.148.194/BiometriaBackendd/src/api/registro.php";
+    String url = "http://192.168.1.49/proyecto_3a/src/api/registro.php";
     String email, password, nombre, telefono, clave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

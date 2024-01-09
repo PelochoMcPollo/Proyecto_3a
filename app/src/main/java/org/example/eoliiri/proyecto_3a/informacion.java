@@ -2,8 +2,12 @@ package org.example.eoliiri.proyecto_3a;
 
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -16,6 +20,8 @@ public class informacion extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.informacion);
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         ViewPager2 viewPager1 = findViewById(R.id.viewPager1);
         ViewPager2 viewPager2 = findViewById(R.id.viewPager2);
@@ -32,6 +38,7 @@ public class informacion extends AppCompatActivity {
         viewPager1.setAdapter(adapter1);
         viewPager2.setAdapter(adapter2);
         viewPager3.setAdapter(adapter3);
+
         viewPager4.setAdapter(adapter4);
         viewPager5.setAdapter(adapter5);
     }
@@ -77,5 +84,26 @@ public class informacion extends AppCompatActivity {
         }
         return fragments;
     }
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.acercaDe) {
+            //lanzarAcercaDe(null);
+            return true;
+        }
+        if (id == R.id.menu_perfil) {
+            //lanzarEditarPerfil(null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
 }
+
 
