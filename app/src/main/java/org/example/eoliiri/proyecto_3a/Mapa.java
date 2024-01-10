@@ -20,7 +20,12 @@ import android.widget.Switch;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +33,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -106,6 +115,39 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         });
     }
 
+    public void obtenerDatosOficiales(RequestQueue requestQueue) {
+
+        String url = "https://api.openaq.org/v1/latest?limit=100&page=1&offset=0&sort=desc&parameter=no2&parameter=o3&radius=1000&location=ES1885A&location=ES1912A&location=ES1239A&location=ES1181A&location=ES1709A&order_by=lastUpdated&dump_raw=false";
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Aquí manejas la respuesta. Por ejemplo, puedes imprimir la respuesta:
+                        try {
+                            JSONObject JTSON = new JSONObject(response);
+                            Log.d("Respuesta", JTSON.getJSONArray("results").getJSONObject(0).toString());
+                            crearMarcadoresEstaciones(JTSON);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Aquí manejas los errores. Por ejemplo, puedes imprimir el mensaje de error:
+                        Log.e("Error", error.toString());
+                    }
+                }
+        );
+
+        // Agrega la solicitud a la cola
+        requestQueue.add(stringRequest);
+    }
+
     private void setSwitchListener(CompoundButton switchButton, int riskLevel) {
         switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             recibirTodosLosPuntos(requestQueue, new RecibirMedicionesCallback() {
@@ -128,13 +170,18 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         recibirTodosLosPuntos(requestQueue, new RecibirMedicionesCallback() {
             @Override
             public void onRecibirMediciones(ArrayList<Medicion> mediciones) {
-                Log.d("TAG", "onMapReady: ");
-                ultimopunto = new LatLng(Double.parseDouble(listaMediciones.get(listaMediciones.size() - 1).getLatitud()), Double.parseDouble(listaMediciones.get(listaMediciones.size() - 1).getLongitud()));
-                mapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                mapa.getUiSettings().setZoomControlsEnabled(false);
-                mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(ultimopunto, 15));
+                actualizarMapaSegunFiltro(mediciones);
             }
         });
+    }
+
+    public void centrarMapa(ArrayList<Medicion> mediciones) {
+        Log.d("TAG", "CENTRAO");
+        ultimopunto = new LatLng(Double.parseDouble(mediciones.get(mediciones.size() - 1).getLatitud()), Double.parseDouble(mediciones.get(mediciones.size() - 1).getLongitud()));
+        mapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mapa.getUiSettings().setZoomControlsEnabled(false);
+        mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(ultimopunto, 13));
+        obtenerDatosOficiales(requestQueue);
     }
 
     public void recibirTodosLosPuntos(RequestQueue requestQueue, final RecibirMedicionesCallback callback) {
@@ -147,11 +194,44 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
                     Log.d("tag", medicion.toString());
                     pintarCirculosEnMapa(medicion);
                 }
+                centrarMapa(mediciones);
                 callback.onRecibirMediciones(mediciones); // Notificar al callback
             }
         });
 
         Server.recuperarMedicionesUsuario(requestQueue, sesionManager.getEmail());
+    }
+
+    private void crearMarcadoresEstaciones(JSONObject Datos) {
+        try {
+            for (int i = 0; i < Datos.getJSONArray("results").length(); i++) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                JSONObject estacion = Datos.getJSONArray("results").getJSONObject(i);
+                markerOptions.title(estacion.getString("location"));
+                double latitud = estacion.getJSONObject("coordinates").getDouble("latitude");
+                double longitud = estacion.getJSONObject("coordinates").getDouble("longitude");
+                markerOptions.position(new LatLng(latitud, longitud));
+                String NO2="", O3="", CO="";
+                for (int j = 0; j < estacion.getJSONArray("measurements").length(); j++) {
+                    JSONObject medicion = estacion.getJSONArray("measurements").getJSONObject(j);
+                    switch (medicion.getString("parameter")) {
+                        case "no2":
+                            NO2 = "NO2:" + medicion.getInt("value");
+                            break;
+                        case "o3":
+                            O3 = "O3:" + medicion.getInt("value");
+                            break;
+                        case "co":
+                            CO = "CO:" + medicion.getInt("value");
+                            break;
+                    }
+                }
+                markerOptions.snippet(NO2+" "+O3+" "+CO);
+                mapa.addMarker(markerOptions);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // Método para pintar círculos en el mapa basados en las mediciones

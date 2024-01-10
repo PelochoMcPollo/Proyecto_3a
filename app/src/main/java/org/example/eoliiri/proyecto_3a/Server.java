@@ -27,44 +27,42 @@ import java.util.Map;
  * mediciones de CO2 y temperatura.
  */
 public class Server {
-    private static String ip = "10.237.24.113";
+    private static String ip = "192.168.1.49";
 
     // URL del servidor al que se enviarán las mediciones.
-    private static final String Url1 = "http://"+ip+"/proyecto_3a/src/api/guardarprueba.php";
-    private static final String UrlRecuperarUsuario = "http://"+ip+"/proyecto_3a/src/api/recuperarusuario.php?email=";
-    private static final String  UrlRecuperarTelefono = "http://"+ip+"/proyecto_3a/src/api/recuperartelefono.php?email=";
-    private  static  final  String UrlActualizarUsuario = "http://"+ip+"/proyecto_3a/src/api/actualizarusuario.php?email=";
-    private  static  final  String UrlActualizarTelefono = "http://"+ip+"/proyecto_3a/src/api/actualizartelefono.php?email=";
-    private  static  final  String UrlCambiarContrasenya = "http://"+ip+"/proyecto_3a/src/api/cambiarcontrasenyaapp.php?email=";
-    private  static  final  String UrlRecuperarContrasenya = "http://"+ip+"/proyecto_3a/src/api/recuperarcontrasenya.php?email=";
-    private  static  final  String UrlRecuperarMedicionesTodas = "http://"+ip+"/proyecto_3a/src/api/recuperartodasmediciones.php";
-    private static final String UrlRecuperarMedicionesUsuario = "http://"+ip+"/proyecto_3a/src/api/recuperartodasmedicionesusuario.php?email=";
+    private static final String Url1 = "http://" + ip + "/proyecto_3a/src/api/guardarprueba.php";
+    private static final String UrlRecuperarUsuario = "http://" + ip + "/proyecto_3a/src/api/recuperarusuario.php?email=";
+    private static final String UrlRecuperarTelefono = "http://" + ip + "/proyecto_3a/src/api/recuperartelefono.php?email=";
+    private static final String UrlActualizarUsuario = "http://" + ip + "/proyecto_3a/src/api/actualizarusuario.php?email=";
+    private static final String UrlActualizarTelefono = "http://" + ip + "/proyecto_3a/src/api/actualizartelefono.php?email=";
+    private static final String UrlCambiarContrasenya = "http://" + ip + "/proyecto_3a/src/api/cambiarcontrasenyaapp.php?email=";
+    private static final String UrlRecuperarContrasenya = "http://" + ip + "/proyecto_3a/src/api/recuperarcontrasenya.php?email=";
+    private static final String UrlRecuperarMedicionesTodas = "http://" + ip + "/proyecto_3a/src/api/recuperartodasmediciones.php";
+    private static final String UrlRecuperarMedicionesUsuario = "http://" + ip + "/proyecto_3a/src/api/recuperartodasmedicionesusuario.php?email=";
 
-    private static String nombre,contrasenya,telefono,email;
+    private static String nombre, contrasenya, telefono, email;
 
-    private static ArrayList<Medicion>  medicionesTodas = new ArrayList<>();
+    private static ArrayList<Medicion> medicionesTodas = new ArrayList<>();
 
-    private  static  UsuarioRecuperadoListener usuarioRecuperadoListener;
-    private  static  TelefonoRecuperadoListener telefonoRecuperadoListener;
+    private static UsuarioRecuperadoListener usuarioRecuperadoListener;
+    private static TelefonoRecuperadoListener telefonoRecuperadoListener;
     private static MedicionesTodasRecuperadoListener medicionesTodasRecuperadoListener;
     private static MedicionesUsuarioRecuperadoListener medicionesUsuarioRecuperadoListener;
-
-
 
 
     /**
      * crearPrueba()
      * Este método envía mediciones de CO2 y temperatura al servidor remoto.
-     *
+     * <p>
      * //-----------------------------------------------------------------------------------------------------------
      * //                String, String, RequestQueue ---> crearPrueba()
      * //-----------------------------------------------------------------------------------------------------------
      *
-     * @param co2bd         Nivel de CO2 a enviar al servidor.
-     * @param tempbd        Temperatura a enviar al servidor.
-     * @param requestQueue  Cola de solicitudes Volley para gestionar la comunicación en red.
+     * @param co2bd        Nivel de CO2 a enviar al servidor.
+     * @param tempbd       Temperatura a enviar al servidor.
+     * @param requestQueue Cola de solicitudes Volley para gestionar la comunicación en red.
      */
-    public  static void crearPrueba(final String co2bd, final String tempbd , RequestQueue requestQueue) {
+    public static void crearPrueba(final String co2bd, final String tempbd, RequestQueue requestQueue) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,    // Método HTTP (POST).
                 Url1,                // URL del servidor.
@@ -80,13 +78,13 @@ public class Server {
                     }
                 }
 
-        ){
+        ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map <String, String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 // Se definen los parámetros a enviar en la solicitud (nivel de CO2 y temperatura).
-                params.put("co2",co2bd);
-                params.put("temp",tempbd);
+                params.put("co2", co2bd);
+                params.put("temp", tempbd);
                 return params;
 
             }
@@ -97,15 +95,14 @@ public class Server {
 
 
     /**
-     *
-     *   -------------------------------------------------------------------------
-     *    requestQueue --> recuperarUsuario() --> [nombre:text, contrasenya:text]
-     *   -------------------------------------------------------------------------
+     * -------------------------------------------------------------------------
+     * requestQueue --> recuperarUsuario() --> [nombre:text, contrasenya:text]
+     * -------------------------------------------------------------------------
      *
      * @param requestQueue
      */
 
-    public static void recuperarUsuario(RequestQueue requestQueue,String correo) {
+    public static void recuperarUsuario(RequestQueue requestQueue, String correo) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,    // Método HTTP (POST).
                 UrlRecuperarUsuario.concat(correo),
@@ -113,8 +110,7 @@ public class Server {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try
-                        {
+                        try {
                             nombre = response.getString("nombreyapellidos");
                             contrasenya = response.getString("contrasenya");
                             email = response.getString("email");
@@ -124,9 +120,7 @@ public class Server {
                             }
 
 
-                        }
-                        catch (JSONException e)
-                        {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -143,10 +137,9 @@ public class Server {
     }
 
     /**
-     *
-     *   -------------------------------------------------------------------------
-     *    requestQueue --> recuperarTelefono() --> [telefono:R]
-     *   -------------------------------------------------------------------------
+     * -------------------------------------------------------------------------
+     * requestQueue --> recuperarTelefono() --> [telefono:R]
+     * -------------------------------------------------------------------------
      *
      * @param requestQueue
      */
@@ -159,16 +152,12 @@ public class Server {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try
-                        {
+                        try {
                             telefono = response.getString("telefono");
-                            if(telefonoRecuperadoListener != null)
-                            {
+                            if (telefonoRecuperadoListener != null) {
                                 telefonoRecuperadoListener.onTelefonoRecuperado();
                             }
-                        }
-                        catch (JSONException e)
-                        {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -283,24 +272,22 @@ public class Server {
     }
 
     /**
-     *
-     *   -------------------------------------------------------------------------
-     *    requestQueue, nombre:text, contrasenya:text --> actualizarusuario()
-     *   -------------------------------------------------------------------------
+     * -------------------------------------------------------------------------
+     * requestQueue, nombre:text, contrasenya:text --> actualizarusuario()
+     * -------------------------------------------------------------------------
      *
      * @param requestQueue
      * @param nombreg
      */
 
-    public static void actualizarusuario(RequestQueue requestQueue ,final String nombreg, final String emailg, final String correo)
-    {
+    public static void actualizarusuario(RequestQueue requestQueue, final String nombreg, final String emailg, final String correo) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,    // Método HTTP (POST).
                 UrlActualizarUsuario.concat(correo),                   // URL del servidor.
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Pelochas","Actualizado");
+                        Log.d("Pelochas", "Actualizado");
                     }
                 },
                 new Response.ErrorListener() {
@@ -310,13 +297,13 @@ public class Server {
                     }
                 }
 
-        ){
+        ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map <String, String> params = new HashMap<>();
-                params.put("email",emailg);
-                params.put("emailantiguo",correo);
-                params.put("nombreyapellidos",nombreg);
+                Map<String, String> params = new HashMap<>();
+                params.put("email", emailg);
+                params.put("emailantiguo", correo);
+                params.put("nombreyapellidos", nombreg);
                 return params;
             }
         };
@@ -326,23 +313,22 @@ public class Server {
 
 
     /**
-     *
-     *   -------------------------------------------------------------------------
-     *    requestQueue, telefono:text --> actualizatelefono()
-     *   -------------------------------------------------------------------------
+     * -------------------------------------------------------------------------
+     * requestQueue, telefono:text --> actualizatelefono()
+     * -------------------------------------------------------------------------
      *
      * @param requestQueue
      * @param telefono
      */
 
-    public static void actualizarTelefono(RequestQueue requestQueue ,final String telefono, final String correo){
+    public static void actualizarTelefono(RequestQueue requestQueue, final String telefono, final String correo) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,    // Método HTTP (POST).
                 UrlActualizarTelefono.concat(correo),                   // URL del servidor.
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Pelochas","Actualizado");
+                        Log.d("Pelochas", "Actualizado");
                     }
                 },
                 new Response.ErrorListener() {
@@ -352,12 +338,12 @@ public class Server {
                     }
                 }
 
-        ){
+        ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map <String, String> params = new HashMap<>();
-                params.put("email",correo);
-                params.put("telefono",telefono);
+                Map<String, String> params = new HashMap<>();
+                params.put("email", correo);
+                params.put("telefono", telefono);
                 return params;
             }
         };
@@ -365,14 +351,14 @@ public class Server {
         requestQueue.add(stringRequest);
     }
 
-    public static void cambiarContrasenya(RequestQueue requestQueue ,final String contrasenyaactual, final String nuevacontrasenya , final String confirmarcontrasenya ,final String correo){
+    public static void cambiarContrasenya(RequestQueue requestQueue, final String contrasenyaactual, final String nuevacontrasenya, final String confirmarcontrasenya, final String correo) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,    // Método HTTP (POST).
                 UrlCambiarContrasenya.concat(correo),                   // URL del servidor.
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Pelochas","Actualizado");
+                        Log.d("Pelochas", "Actualizado");
                     }
                 },
                 new Response.ErrorListener() {
@@ -382,14 +368,14 @@ public class Server {
                     }
                 }
 
-        ){
+        ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map <String, String> params = new HashMap<>();
-                params.put("contrasenyaactual",contrasenyaactual);
-                params.put("nuevacontrasenya",nuevacontrasenya);
-                params.put("confirmarcontrasenya",confirmarcontrasenya);
-                params.put("correo",correo);
+                Map<String, String> params = new HashMap<>();
+                params.put("contrasenyaactual", contrasenyaactual);
+                params.put("nuevacontrasenya", nuevacontrasenya);
+                params.put("confirmarcontrasenya", confirmarcontrasenya);
+                params.put("correo", correo);
                 return params;
             }
         };
@@ -397,14 +383,14 @@ public class Server {
         requestQueue.add(stringRequest);
     }
 
-    public static void recuperContrasenya(RequestQueue requestQueue ,final String nuevacontrasenya , final String confirmarcontrasenya ,final String correo){
+    public static void recuperContrasenya(RequestQueue requestQueue, final String nuevacontrasenya, final String confirmarcontrasenya, final String correo) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,    // Método HTTP (POST).
                 UrlRecuperarContrasenya.concat(correo),                   // URL del servidor.
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Pelochas","Actualizado");
+                        Log.d("Pelochas", "Actualizado");
                     }
                 },
                 new Response.ErrorListener() {
@@ -414,13 +400,13 @@ public class Server {
                     }
                 }
 
-        ){
+        ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map <String, String> params = new HashMap<>();
-                params.put("nuevacontrasenya",nuevacontrasenya);
-                params.put("confirmarcontrasenya",confirmarcontrasenya);
-                params.put("email",correo);
+                Map<String, String> params = new HashMap<>();
+                params.put("nuevacontrasenya", nuevacontrasenya);
+                params.put("confirmarcontrasenya", confirmarcontrasenya);
+                params.put("email", correo);
                 return params;
             }
         };
@@ -430,14 +416,12 @@ public class Server {
 
 
     /**
-     *
      * @param requestQueue
      * @param nombrei
      * @param telefonoi
      * @param emaili
      */
-    public static void modificarTextos(RequestQueue requestQueue,TextInputEditText nombrei , TextInputEditText telefonoi, TextInputEditText emaili,String correo)
-    {
+    public static void modificarTextos(RequestQueue requestQueue, TextInputEditText nombrei, TextInputEditText telefonoi, TextInputEditText emaili, String correo) {
         Server.setUsuarioRecuperadoListener(new UsuarioRecuperadoListener() {
             @Override
             public void onUsuarioRecuperado() {
@@ -455,9 +439,8 @@ public class Server {
         });
 
         // Inicia la recuperación de datos del usuario
-        Server.recuperarUsuario(requestQueue,correo);
-        Server.recuperarTelefono(requestQueue,correo);
-
+        Server.recuperarUsuario(requestQueue, correo);
+        Server.recuperarTelefono(requestQueue, correo);
 
 
     }
@@ -465,21 +448,22 @@ public class Server {
     public static void setUsuarioRecuperadoListener(UsuarioRecuperadoListener listener) {
         usuarioRecuperadoListener = listener;
     }
-    public static void setTelefonoRecuperadoListener(TelefonoRecuperadoListener listener){
+
+    public static void setTelefonoRecuperadoListener(TelefonoRecuperadoListener listener) {
         telefonoRecuperadoListener = listener;
     }
 
-    public static void setMedicionesTodasRecuperadoListener(MedicionesTodasRecuperadoListener listener){
-         medicionesTodasRecuperadoListener = listener;
+    public static void setMedicionesTodasRecuperadoListener(MedicionesTodasRecuperadoListener listener) {
+        medicionesTodasRecuperadoListener = listener;
     }
 
-    public static void setMedicionesUsuarioRecuperadoListener(MedicionesUsuarioRecuperadoListener listener){
+    public static void setMedicionesUsuarioRecuperadoListener(MedicionesUsuarioRecuperadoListener listener) {
         medicionesUsuarioRecuperadoListener = listener;
     }
 
     /**
      * getUrl1()
-     *
+     * <p>
      * //-----------------------------------------------------------------------------------------------------------
      * //       getUrl1() ---> String
      * //-----------------------------------------------------------------------------------------------------------
@@ -487,18 +471,23 @@ public class Server {
      *
      * @return URL del servidor.
      */
-    public  static String getUrl1()
-    {
-        return  Url1;
+    public static String getUrl1() {
+        return Url1;
     }
-    public  static String getUrlRecuperarUsuario()
-    {
-        return  UrlRecuperarUsuario;
+
+    public static String getUrlRecuperarUsuario() {
+        return UrlRecuperarUsuario;
     }
-    public  static String getNombre() {return  nombre;}
-    public  static String getContrasenya()
-    {
-        return  contrasenya;
+
+    public static String getNombre() {
+        return nombre;
     }
-    public  static String getTelefono(){return telefono;}
+
+    public static String getContrasenya() {
+        return contrasenya;
+    }
+
+    public static String getTelefono() {
+        return telefono;
+    }
 }
