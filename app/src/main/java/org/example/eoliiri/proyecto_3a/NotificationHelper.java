@@ -19,6 +19,7 @@ public class NotificationHelper {
                 .setSmallIcon(R.drawable.logo)  // 设置通知图标
                 .setContentTitle(titulo)  // 设置通知标题
                 .setContentText(contenido)  // 设置通知内容
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(contenido))  // 设置 BigTextStyle，允许展开通知查看完整文本内容
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);  // 设置通知优先级
 
         // 显示通知
