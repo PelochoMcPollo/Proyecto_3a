@@ -31,8 +31,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
@@ -50,9 +52,8 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
     Switch baja, media, alta;
     Spinner spinner;
     ImageView menu;
-    String[] opciones = {"Co2", "Ozono"};
+    String[] opciones = {"O3", "CO","NO2"};
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
-    //private final LatLng EPSG = new LatLng(38.99611917166694, -0.16607561670145485);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +94,9 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         });
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, opciones);
         spinner.setAdapter(adapter);
-
         setSwitchListener(baja, 1);
         setSwitchListener(media, 2);
         setSwitchListener(alta, 3);
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -112,50 +111,6 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        });
-    }
-
-    public void obtenerDatosOficiales(RequestQueue requestQueue) {
-
-        String url = "https://api.openaq.org/v1/latest?limit=100&page=1&offset=0&sort=desc&parameter=no2&parameter=o3&radius=1000&location=ES1885A&location=ES1912A&location=ES1239A&location=ES1181A&location=ES1709A&order_by=lastUpdated&dump_raw=false";
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Aquí manejas la respuesta. Por ejemplo, puedes imprimir la respuesta:
-                        try {
-                            JSONObject JTSON = new JSONObject(response);
-                            Log.d("Respuesta", JTSON.getJSONArray("results").getJSONObject(0).toString());
-                            crearMarcadoresEstaciones(JTSON);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Aquí manejas los errores. Por ejemplo, puedes imprimir el mensaje de error:
-                        Log.e("Error", error.toString());
-                    }
-                }
-        );
-
-        // Agrega la solicitud a la cola
-        requestQueue.add(stringRequest);
-    }
-
-    private void setSwitchListener(CompoundButton switchButton, int riskLevel) {
-        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            recibirTodosLosPuntos(requestQueue, new RecibirMedicionesCallback() {
-                @Override
-                public void onRecibirMediciones(ArrayList<Medicion> mediciones) {
-                    actualizarMapaSegunFiltro(mediciones);
-                }
-            });
         });
     }
 
@@ -175,13 +130,31 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         });
     }
 
+    private void setSwitchListener(CompoundButton switchButton, int riskLevel) {
+        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            recibirTodosLosPuntos(requestQueue, new RecibirMedicionesCallback() {
+                @Override
+                public void onRecibirMediciones(ArrayList<Medicion> mediciones) {
+                    actualizarMapaSegunFiltro(mediciones);
+                }
+            });
+        });
+    }
+
     public void centrarMapa(ArrayList<Medicion> mediciones) {
         Log.d("TAG", "CENTRAO");
-        ultimopunto = new LatLng(Double.parseDouble(mediciones.get(mediciones.size() - 1).getLatitud()), Double.parseDouble(mediciones.get(mediciones.size() - 1).getLongitud()));
+        //ultimopunto = new LatLng(Double.parseDouble(mediciones.get(mediciones.size() - 1).getLatitud()), Double.parseDouble(mediciones.get(mediciones.size() - 1).getLongitud()));
         mapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mapa.getUiSettings().setZoomControlsEnabled(false);
-        mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(ultimopunto, 13));
-        obtenerDatosOficiales(requestQueue);
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Medicion medicion : mediciones) {
+            LatLng posicion = new LatLng(Double.parseDouble(medicion.getLatitud()), Double.parseDouble(medicion.getLongitud()));
+            builder.include(posicion);
+        }
+        LatLngBounds bounds = builder.build();
+        mapa.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+        //mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(ultimopunto, 13));
+        //obtenerDatosOficiales(requestQueue);
     }
 
     public void recibirTodosLosPuntos(RequestQueue requestQueue, final RecibirMedicionesCallback callback) {
@@ -201,38 +174,75 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
 
         Server.recuperarMedicionesUsuario(requestQueue, sesionManager.getEmail());
     }
+    private void crearMarcadorEstacion(JSONObject estacion, String parametro, String snippet) throws JSONException {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.title(estacion.getString("location"));
+        double latitud = estacion.getJSONObject("coordinates").getDouble("latitude");
+        double longitud = estacion.getJSONObject("coordinates").getDouble("longitude");
+        int valor;
+        float color;
+        markerOptions.position(new LatLng(latitud, longitud));
+        for (int j = 0; j < estacion.getJSONArray("measurements").length(); j++) {
+            JSONObject medicion = estacion.getJSONArray("measurements").getJSONObject(j);
+            if (medicion.getString("parameter").equals(parametro)) {
+                valor = medicion.getInt("value");
+                markerOptions.snippet(snippet + ": " + valor);
+                color = decidirColor(valor);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(color));
+            }
+        }
+        mapa.addMarker(markerOptions);
+    }
 
-    private void crearMarcadoresEstaciones(JSONObject Datos) {
-        try {
-            for (int i = 0; i < Datos.getJSONArray("results").length(); i++) {
-                MarkerOptions markerOptions = new MarkerOptions();
-                JSONObject estacion = Datos.getJSONArray("results").getJSONObject(i);
-                markerOptions.title(estacion.getString("location"));
-                double latitud = estacion.getJSONObject("coordinates").getDouble("latitude");
-                double longitud = estacion.getJSONObject("coordinates").getDouble("longitude");
-                markerOptions.position(new LatLng(latitud, longitud));
-                String NO2="", O3="", CO="";
-                for (int j = 0; j < estacion.getJSONArray("measurements").length(); j++) {
-                    JSONObject medicion = estacion.getJSONArray("measurements").getJSONObject(j);
-                    switch (medicion.getString("parameter")) {
-                        case "no2":
-                            NO2 = "NO2:" + medicion.getInt("value");
-                            break;
-                        case "o3":
-                            O3 = "O3:" + medicion.getInt("value");
-                            break;
-                        case "co":
-                            CO = "CO:" + medicion.getInt("value");
-                            break;
+    public void obtenerDatosOficiales(RequestQueue requestQueue) {
+        String url = "https://api.openaq.org/v1/latest?limit=100&page=1&offset=0&sort=desc&parameter=no2&parameter=o3&radius=1000&location=ES1885A&location=ES1912A&location=ES1239A&location=ES1181A&location=ES1709A&order_by=lastUpdated&dump_raw=false";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            for (int i = 0; i < response.getJSONArray("results").length(); i++) {
+                                JSONObject estacion = response.getJSONArray("results").getJSONObject(i);
+                                switch (spinner.getSelectedItemPosition()) {
+                                    case 0:
+                                        crearMarcadorEstacion(estacion, "o3", "O3");
+                                        break;
+                                    case 1:
+                                        crearMarcadorEstacion(estacion, "co", "CO");
+                                        break;
+                                    case 2:
+                                        crearMarcadorEstacion(estacion, "no2", "NO2");
+                                        break;
+                                }
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error", error.toString());
                     }
                 }
-                markerOptions.snippet(NO2+" "+O3+" "+CO);
-                mapa.addMarker(markerOptions);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        );
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private float decidirColor(int valor) {
+        if (valor <= 180) {
+            return BitmapDescriptorFactory.HUE_GREEN;
+        } else if (180 < valor && valor <= 240) {
+            return BitmapDescriptorFactory.HUE_YELLOW;
+        } else {
+            return BitmapDescriptorFactory.HUE_RED;
         }
     }
+
 
     // Método para pintar círculos en el mapa basados en las mediciones
     private void pintarCirculosEnMapa(Medicion medicion) {
@@ -293,6 +303,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
     }
 
     public ArrayList<Medicion> filterByValue(ArrayList<Medicion> mediciones) {
+
         if (!baja.isChecked() && !media.isChecked() && !alta.isChecked()) {
             // Ninguna opción está seleccionada, devolver la lista original sin filtrar
             return mediciones;
@@ -314,11 +325,12 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
     private void actualizarMapaSegunFiltro(ArrayList<Medicion> mediciones) {
         ArrayList<Medicion> med = filterByContaminant(mediciones);
         med = filterByValue(med);
-        Log.d("tag", med.toString());
+        Log.d("TAG", "ACTUALIZAO");
         mapa.clear();
         for (Medicion medicion : med) {
             pintarCirculosEnMapa(medicion);
         }
+        obtenerDatosOficiales(requestQueue);
     }
 
     public void cerrarSesion(View view) {
