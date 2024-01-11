@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 public class MainPage extends AppCompatActivity {
     TextView co2,temperatura,riesgo;
     ImageView co2Image;
+    HorizontalProgressBar progressBar;
     private double co2Valor;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -24,8 +25,10 @@ public class MainPage extends AppCompatActivity {
         temperatura=findViewById(R.id.Temp);
         riesgo=findViewById(R.id.nivelRiesgo);
         co2Image=findViewById(R.id.colorCo2);
+        progressBar=findViewById(R.id.progressBar);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        progressBar.setProgress(1400);
         /*co2.setText(co2p);
         temperatura.setText(tempp);
         riesgo.setText();*/

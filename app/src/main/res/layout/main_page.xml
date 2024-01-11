@@ -31,6 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/calendario" />
 
+
     <ImageView
         android:id="@+id/colorCo2"
         android:layout_width="194dp"
@@ -121,19 +122,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/descripcionAlerta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:fontFamily="@font/roboto_light"
-        android:text="La concentración de &quot;contaminante&quot; \n en el ambiente es &quot;null&quot; hoy."
-        android:textColor="#2E2E2E"
-        android:textSize="16sp"
+    <org.example.eoliiri.proyecto_3a.HorizontalProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toTopOf="@+id/nivelRiesgo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emoticono" />
+        app:layout_constraintTop_toBottomOf="@+id/emoticono"
+        tools:ignore="MissingClass,MissingConstraints" />
 
     <TextView
         android:id="@+id/hoy"
