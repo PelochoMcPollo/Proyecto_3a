@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class MainPage extends AppCompatActivity {
-    TextView co2,temperatura,riesgo;
+    /*TextView co2,temperatura,riesgo;
     ImageView co2Image;
     HorizontalProgressBar progressBar;
     private double co2Valor;
@@ -31,7 +31,7 @@ public class MainPage extends AppCompatActivity {
         progressBar.setProgress(1400);
         /*co2.setText(co2p);
         temperatura.setText(tempp);
-        riesgo.setText();*/
+        riesgo.setText();
 
         if(co2Valor<400){
             co2Image.setImageResource(R.drawable.verde);
@@ -60,6 +60,6 @@ public class MainPage extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
-    }
+    }*/
 
 }

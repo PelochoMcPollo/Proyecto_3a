@@ -7,7 +7,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,10 +18,13 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +34,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import android.os.Handler;
+
 import java.util.ArrayList;
 
 public class Mapa extends FragmentActivity implements OnMapReadyCallback {
@@ -37,6 +44,9 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
     private ArrayList<Medicion> listaMediciones;
     private SesionManager sesionManager;
     LatLng ultimopunto;
+    TextView ppm;
+    private Handler handler = new Handler();
+    private Runnable ppmRunnable;
 
     Switch baja, media, alta;
     Spinner spinner;
@@ -50,14 +60,24 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
         requestQueue = Volley.newRequestQueue(this);
-        SupportMapFragment mapFragment = (SupportMapFragment)
-                getSupportFragmentManager().findFragmentById(R.id.mapa2);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa2);
         mapFragment.getMapAsync(this);
         sesionManager = new SesionManager(this);
+        ppm = (TextView) findViewById(R.id.calidadAire);
         baja = findViewById(R.id.switch1);
         media = findViewById(R.id.switch2);
         alta = findViewById(R.id.switch3);
         spinner = findViewById(R.id.spinner);
+        handler.postDelayed(ppmRunnable = new Runnable() {
+            public void run() {
+                // Llamar a la función Ppm para actualizar el TextView cada 40 segundos
+                Ppm(requestQueue, sesionManager.getEmail());
+
+                // Volver a programar la ejecución después de 40 segundos
+                handler.postDelayed(this, 40000);
+            }
+        }, 0);
+
         menu = findViewById(R.id.puntosMenu);
         menu.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(this, v);
@@ -256,6 +276,30 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
     public void lanzarMasInfo(View view) {
         Intent intent = new Intent(this, informacion.class);
         startActivity(intent);
+    }
+
+    public void Ppm(RequestQueue requestQueue, String correo){
+        Server.setUsuarioMedicionListener(new UsuarioMeidicionRecuperadoListener() {
+            @Override
+            public void onUsuarioMedicionListener() {
+                Log.d("Pelochas",Server.idmedicion);
+                Server.setMedicionListener(new MedicionRecuperadoListener() {
+                    @Override
+                    public void medicionGuardada() {
+                        ppm.setText(Server.valor);
+                    }
+                });
+                Server.recuperarMedicion(requestQueue,Server.idmedicion);
+            }
+        });
+        Server.recuperarUsuarioMedicion(requestQueue,correo);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Detener el Runnable cuando la actividad se destruye
+        handler.removeCallbacks(ppmRunnable);
+        super.onDestroy();
     }
 }
 

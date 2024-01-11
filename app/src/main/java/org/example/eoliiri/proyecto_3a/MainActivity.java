@@ -20,6 +20,9 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.os.ParcelUuid;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,6 +43,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -496,7 +500,8 @@ public class MainActivity extends AppCompatActivity {
             notificationChannel.setDescription("Descripcion del canal");
             notificationManager.createNotificationChannel(notificationChannel);
         }
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         sesionManager = new SesionManager(this);
 
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
@@ -512,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
         // Asigna los TextView de la interfaz a las variables co2 y temp.
         co2 = findViewById(R.id.CO2); //
         temp = findViewById(R.id.Temp);
-        dis = findViewById(R.id.textView11);
+        //dis = findViewById(R.id.textView11);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
@@ -532,6 +537,7 @@ public class MainActivity extends AppCompatActivity {
         //alerta cuando cambia el textView de co2
 
     } // onCreate()
+
 
     // Método llamado cuando se otorgan o deniegan permisos solicitados por la aplicación.
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -675,6 +681,33 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.acercaDe) {
+            //lanzarAcercaDe(null);
+            return true;
+        }
+        if (id == R.id.menu_perfil) {
+            //lanzarEditarPerfil(null);
+            return true;
+        }
+        if(id == R.id.descubrir){
+            lanzarEditarDescubrir(null);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    public void lanzarEditarDescubrir(View view){
+        Intent i = new Intent(this,informacion.class);
+        startActivity(i);
     }
 
 

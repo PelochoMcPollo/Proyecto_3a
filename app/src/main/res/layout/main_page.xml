@@ -5,9 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
@@ -31,7 +28,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/calendario" />
 
-
     <ImageView
         android:id="@+id/colorCo2"
         android:layout_width="194dp"
@@ -46,8 +42,8 @@
         android:id="@+id/calidadAire"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="15dp"
         android:fontFamily="@font/roboto_bold"
         android:shadowColor="#000000"
         android:shadowDx="4"
@@ -55,10 +51,9 @@
         android:text="100"
         android:textColor="#000000"
         android:textSize="56sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <TextView
         android:id="@+id/ppm"
@@ -81,6 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
         android:shadowColor="#393535"
         android:shadowDx="-3"
         android:shadowRadius="5"
@@ -89,7 +85,27 @@
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="80dp" />
+        app:layout_constraintTop_toBottomOf="@+id/ubicacionSonda" />
+
+    <TextView
+        android:id="@+id/ubicacionSonda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Carrer del Paranimf, Gandia, Valencia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iconoMarcador"
+        android:layout_width="15dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="7dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ubicacionSonda"
+        app:layout_constraintStart_toEndOf="@+id/ubicacionSonda"
+        app:srcCompat="@drawable/ditu" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -99,6 +115,16 @@
         app:layout_constraintGuide_percent="0.4" />
 
     <ImageView
+        android:id="@+id/puntosMenu"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ubicacionSonda"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/valorTemp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/opciones" />
+
+    <ImageView
         android:id="@+id/emoticono"
         android:layout_width="70dp"
         android:layout_height="75dp"
@@ -106,6 +132,7 @@
         app:layout_constraintBottom_toTopOf="@+id/nivelRiesgo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ubicacionSonda"
         app:srcCompat="@android:drawable/btn_dialog" />
 
     <TextView
@@ -122,15 +149,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <org.example.eoliiri.proyecto_3a.HorizontalProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+    <TextView
+        android:id="@+id/descripcionAlerta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="La concentración de &quot;contaminante&quot; \n en el ambiente es &quot;null&quot; hoy."
+        android:textColor="#2E2E2E"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/nivelRiesgo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emoticono"
-        tools:ignore="MissingClass,MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/emoticono" />
 
     <TextView
         android:id="@+id/hoy"
@@ -213,15 +244,71 @@
         app:layout_constraintBottom_toBottomOf="@+id/hasta"
         app:layout_constraintStart_toEndOf="@+id/hasta" />
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?android:attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toTopOf="parent"
+    <fragment
+        android:id="@+id/mapa2"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hasta" />
 
-        tools:ignore="MissingConstraints" />
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Baja"
+        app:layout_constraintEnd_toStartOf="@+id/switch2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/switch2" />
+
+    <Switch
+        android:id="@+id/switch2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Media"
+        app:layout_constraintEnd_toStartOf="@+id/switch3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/switch1"
+        app:layout_constraintTop_toTopOf="@+id/mapa2" />
+
+    <Switch
+        android:id="@+id/switch3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/switch2"
+        app:layout_constraintTop_toTopOf="@+id/switch2" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+
+
+    <org.example.eoliiri.proyecto_3a.HorizontalProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/nivelRiesgo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emoticono"
+        tools:ignore="MissingClass,MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

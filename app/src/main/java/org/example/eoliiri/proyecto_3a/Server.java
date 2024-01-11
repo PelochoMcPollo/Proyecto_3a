@@ -50,9 +50,10 @@ public class Server {
     private static  final  String UrlGuardarUsuarioMedicion = "http://"+ip+"/BiometriaBackendd/src/api/guardarusuariomedicion.php?";
     private  static  final  String UrlRecuperarMedicionesTodas = "http://"+ip+"/BiometriaBackendd/src/api/recuperartodasmediciones.php";
     private static final String UrlRecuperarMedicionesUsuario = "http://"+ip+"/BiometriaBackendd/src/api/recuperartodasmedicionesusuario.php?email=";
+    private static final String UrlRecuperarMedicion = "http://"+ip+"/BiometriaBackendd/src/api/recuperarmedicion.php?idmedicion=";
 
     private static String nombre,contrasenya,telefono,email;
-    public static String  sonda,idmedicion;
+    public static String  sonda,idmedicion,valor;
 
     private static ArrayList<Medicion>  medicionesTodas = new ArrayList<>();
 
@@ -63,6 +64,7 @@ public class Server {
     private static MedicionesTodasRecuperadoListener medicionesTodasRecuperadoListener;
     private static MedicionesUsuarioRecuperadoListener medicionesUsuarioRecuperadoListener;
     private  static  UltimaMedicionRecuperadoListener ultimaMedicionRecuperadoListener;
+    private  static  MedicionRecuperadoListener medicionRecuperadoListener;
 
 
 
@@ -453,6 +455,39 @@ public class Server {
 
     }
 
+    public  static  void  recuperarMedicion(RequestQueue requestQueue, String idmedicion2)
+    {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,    // Método HTTP (POST).
+                UrlRecuperarMedicion.concat(idmedicion2),                   // URL del servidor.
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try
+                        {
+                            valor = response.getString("valor");
+                            if(medicionRecuperadoListener != null)
+                            {
+                                medicionRecuperadoListener.medicionGuardada();
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+        requestQueue.add(jsonObjectRequest);
+    }
+
 
     public static void recuperarMedicionesTodas(RequestQueue requestQueue) {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -757,6 +792,10 @@ public class Server {
     }
     public  static  void  setUltimaMedicionListener(UltimaMedicionRecuperadoListener listener){
         ultimaMedicionRecuperadoListener = listener;
+    }
+
+    public  static  void  setMedicionListener(MedicionRecuperadoListener listener){
+        medicionRecuperadoListener = listener;
     }
 
     /**
