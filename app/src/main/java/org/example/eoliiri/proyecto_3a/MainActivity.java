@@ -4,6 +4,9 @@ package org.example.eoliiri.proyecto_3a;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -12,6 +15,7 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.ParcelUuid;
@@ -22,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,10 +37,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,32 +53,46 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
+
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 
 public class MainActivity extends AppCompatActivity {
+    private NotificationManager notificationManager;
+    static final String CANAL_ID = "Alertas";
+    static final int NOTIFICACION_ID = 1;
 
     //----------------detectar cambios en el textView para alertas----
-
-
     private int scanResultCount = 0;
     private int toastQR = 0;
     private int valoresco2;
+    private FusedLocationProviderClient fusedLocationClient;
     int c = 0;
 
-    TextView co2, temp; // Declaración de TextViews para mostrar datos.
+    private Map<String, Long> lastExecutionTime = new HashMap<>();
+
+    TextView co2, temp, dis; // Declaración de TextViews para mostrar datos.
     String co2p = "0", tempp = "0"; // Variables para almacenar valores de CO2 y temperatura.
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
     SesionManager sesionManager; // Gestor de sesiones para almacenar credenciales de usuario.
+
+    double latitude;
+    double longitude;
 
     private static final int MAX_VALORES_CO2 = 10; // Cambia el tamaño según tu preferencia
     private String[] ultimosValoresCO2 = new String[MAX_VALORES_CO2];
@@ -80,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Código de solicitud de permisos para Bluetooth y ubicación.
     private static final int CODIGO_PETICION_PERMISOS = 11223344;
+
+    private static final long TIEMPO_ENTRE_EJECUCIONES = 30_000;
 
     // Escáner de dispositivos Bluetooth LE y callback para el escaneo.
     private BluetoothLeScanner elEscanner;
@@ -176,19 +201,27 @@ public class MainActivity extends AppCompatActivity {
     // --------------------------------------------------------------
     @SuppressLint("MissingPermission")
     private void buscarEsteDispositivoBTLE(final String dispositivoBuscado) {
-        Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): empieza");
+        Log.d(ETIQUETA_LOG, " buscarEsteDispositivoBTLE(): empieza ");
 
-        Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): instalamos scan callback");
+        Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): instalamos scan callback ");
 
+        final MainActivity activity = this; // Almacena la referencia a MainActivity
+
+        // super.onScanResult(ScanSettings.SCAN_MODE_LOW_LATENCY, result); para ahorro de energía
+
+        // Configurar un ScanCallback para escanear dispositivos Bluetooth LE.
         this.callbackDelEscaneo = new ScanCallback() {
             @Override
             public void onScanResult(int callbackType, ScanResult resultado) {
                 super.onScanResult(callbackType, resultado);
 
+
                 Log.d(ETIQUETA_LOG, "buscarEsteDispositivoBTLE(): onScanResult()");
                 Log.d("cishu", String.valueOf(scanResultCount));
 
-                if (dispositivoBuscado.equals(resultado.getDevice().getName())) {
+                String beaconActual = resultado.getDevice().getAddress(); // Cambiar esto por el identificador único del beacon
+                if (dispositivoBuscado.equals(resultado.getDevice().getName()) &&
+                        esPermitidoEjecutar(beaconActual)) {
                     if (toastQR == 0) {
                         Toast.makeText(getApplicationContext(), "Conectado correctamente",
                                 Toast.LENGTH_LONG).show();
@@ -205,64 +238,81 @@ public class MainActivity extends AppCompatActivity {
                     scanResultCount = 0;
 
                     double distancia = calcularDistancia(tib.getTxPower(), resultado.getRssi());
-                    Log.d("Pelochas", "distancia: " + String.valueOf(distancia));
+                    double d = cDistancia(tib.getTxPower(), resultado.getRssi(), 2);
+                    mostrarDistancia(d);
+                    Log.d("Pelochas", "distancia: " + String.valueOf(d));
 
-                    if (!co2p.equals(String.valueOf(Utilidades.bytesToInt(tib.getMajor())))) {
-                        co2p = String.valueOf(Utilidades.bytesToInt(tib.getMajor()));
-                        tempp = String.valueOf(Utilidades.bytesToInt(tib.getMinor()));
-
-                        co2.setText(co2p);
-                        temp.setText(tempp);
-
-                        ultimosValoresCO2[indiceValoresCO2] = co2p;
-
-                        Instant instanteActual = Instant.now();
-                        ZonedDateTime zonedDateTime = instanteActual.atZone(ZoneId.of("Europe/Madrid"));
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                        String fechaFormateada = formatter.format(zonedDateTime);
-                        Log.d("pelochas", "fecha: " + fechaFormateada);
-
-                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        LocationListener locationListener = new LocationListener() {
-                            public void onLocationChanged(Location location) {
-                                double latitud = location.getLatitude();
-                                double longitud = location.getLongitude();
-
-                                Server.guardarMedicion(fechaFormateada, String.valueOf(latitud), String.valueOf(longitud), co2p, String.valueOf(1), requestQueue, new MedicionRecuperadoListener() {
-                                    @Override
-                                    public void medicionGuardada() {
-                                        Log.d("pelochas", String.valueOf(c));
-                                        c++;
-                                        Server.setSondaRecuperadoListener(new SondaRecuperadoListener() {
-                                            @Override
-                                            public void onSondaRecuperado() {
-                                                Log.d("pelochas", Server.sonda);
-                                                Log.d("pelochas", "hola");
-                                                Server.setUsuarioMedicionListener(new UsuarioMeidicionRecuperadoListener() {
-                                                    @Override
-                                                    public void onUsuarioMedicionListener() {
-                                                        Log.d("pelochas", Server.sonda);
-                                                        Log.d("pelochas", Server.idmedicion);
-                                                        Server.guardarSondaMedidion(requestQueue, Server.sonda, Server.idmedicion);
-                                                    }
-                                                });
-                                                Server.recuperarUsuarioMedicion(requestQueue, sesionManager.getEmail());
-                                            }
-                                        });
-                                        Server.recuperarSonda(requestQueue);
-                                    }
-                                });
-
-                            }
-                        };
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                    int valor = Utilidades.bytesToInt(tib.getMajor());
+                    if (valor < 0) {
+                        valor = valor * -1;
                     }
+                    co2p = String.valueOf(valor);
+                    tempp = String.valueOf(Utilidades.bytesToInt(tib.getMinor()));
+
+                    if (Integer.parseInt(co2p) > 180 && Integer.parseInt(co2p) <= 240) {
+                        lanzarNoti(1);
+                    } else if (Integer.parseInt(co2p) > 240) {
+                        lanzarNoti(2);
+                    }
+
+                    co2.setText(co2p);
+                    temp.setText(tempp);
+
+                    ultimosValoresCO2[indiceValoresCO2] = co2p;
+
+                    //Hora
+                    Instant instanteActual = Instant.now();
+                    ZonedDateTime zonedDateTime = instanteActual.atZone(ZoneId.of("Europe/Madrid"));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    String fechaFormateada = formatter.format(zonedDateTime);
+
+                    //Coordenadas
+
+                    fusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    if (location != null) {
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
+
+                                        // Utiliza latitude y longitude aquí
+                                        Log.d("Pelochas", "Latitud: " + latitude + ", Longitud: " + longitude);
+
+                                        // Aquí puedes realizar acciones con la ubicación obtenida
+                                    }
+                                }
+                            });
+
+
+                    Server.guardarMedicion(fechaFormateada, String.valueOf(latitude), String.valueOf(longitude), co2p, String.valueOf(1), requestQueue, new MedicionRecuperadoListener() {
+                        @Override
+                        public void medicionGuardada() {
+                            Server.setSondaRecuperadoListener(new SondaRecuperadoListener() {
+                                @Override
+                                public void onSondaRecuperado() {
+                                    Server.setUltimaMedicionListener(new UltimaMedicionRecuperadoListener() {
+                                        @Override
+                                        public void onUltimaMedicionListener() {
+                                            Server.guardarSondaMedidion(requestQueue, Server.sonda, Server.idmedicion);
+                                            Server.guardarUsuarioMedicion(requestQueue, sesionManager.getEmail(), Server.idmedicion);
+                                        }
+                                    });
+                                    Server.recuperarUltimaMedicion(requestQueue);
+                                }
+                            });
+                            Server.recuperarSonda(requestQueue);
+                        }
+                    });
+
+                    lastExecutionTime.put(beaconActual, System.currentTimeMillis());
+
                 } else {
                     scanResultCount++;
                 }
 
                 if (scanResultCount >= 500) {
-                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía beacons al móvil");
+                    NotificationHelper.mostrarNotificacion(MainActivity.this, "Alertas!", "sensor dañado o que hace lecturas erróneas o que no envía datos al móvil");
                     scanResultCount = 0;
                 }
             }
@@ -291,58 +341,19 @@ public class MainActivity extends AppCompatActivity {
         void medicionGuardada();
     }
 
-    private void medicionesRandoms() {
-        for (int i = 1; i <= 20; i++) {
 
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            int finalI = i;
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    Instant instanteActual = Instant.now();
-                    ZonedDateTime zonedDateTime = instanteActual.atZone(ZoneId.of("Europe/Madrid"));
-                    ZonedDateTime zonedDateTime1 = zonedDateTime.plusHours(finalI);
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    String fechaFormateada = formatter.format(zonedDateTime1);
-                    Log.d("pelochas", "fecha: " + fechaFormateada);
+    //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);}
 
-                    Random random = new Random();
-                    int numeroAleatorio = random.nextInt(301);
 
-                    double latitud = location.getLatitude();
-                    double longitud = location.getLongitude();
+    private boolean esPermitidoEjecutar(String beaconActual) {
+        long tiempoActual = System.currentTimeMillis();
 
-                    double variacionLatitud = Math.random() * 0.02 - 0.01; // Variación de +/- 0.01 para la latitud
-                    double variacionLongitud = Math.random() * 0.02 - 0.01;
+        // Obtiene el tiempo de la última ejecución para el beacon actual
+        Long ultimoTiempoEjecucion = lastExecutionTime.get(beaconActual);
 
-                    double latitudNueva = latitud + variacionLatitud;
-                    double longitudNueva = longitud + variacionLongitud;
-
-                    Server.guardarMedicion(fechaFormateada, String.valueOf(latitudNueva), String.valueOf(longitudNueva), String.valueOf(numeroAleatorio), String.valueOf(1), requestQueue, new MedicionRecuperadoListener() {
-                        @Override
-                        public void medicionGuardada() {
-                            // Aquí puedes realizar acciones después de que la medición se haya guardado
-                        }
-                    });
-                }
-
-                // Otros métodos de LocationListener que podrían necesitar implementación, como onProviderEnabled, onProviderDisabled, etc.
-            });
-        }
+        // Si es la primera vez que se detecta el beacon o ha pasado suficiente tiempo desde la última ejecución
+        return ultimoTiempoEjecucion == null || tiempoActual - ultimoTiempoEjecucion > TIEMPO_ENTRE_EJECUCIONES;
     }
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);}
-
-
 
     // 计算距离的方法 Cómo calcular la distancia
     private double calcularDistancia(int txPower, int rssi) {
@@ -350,16 +361,32 @@ public class MainActivity extends AppCompatActivity {
         return Math.pow(10d, ((double) (txPower - rssi)) / (90 * 4));
     }
 
-    // 显示距离的方法 Cómo mostrar la distancia
-        private void mostrarDistancia(double distancia) {
-        // 将距离显示在 distanciavalue 的 TextView 上    Mostrar distancia en TextView de distanciavalue
-        /*TextView distanciavalue = findViewById(R.id.distanciavalue);
-        if (distancia < 1) {
-            distanciavalue.setText("Cerca");
-            //distanciavalue.setText(String.format("%.2f", distancia) + " meters");
+    public double cDistancia(int txPower, int rssi, double n) {
+        if (rssi == 0) {
+            return -1.0; // Valor no válido, la señal no se detecta
+        }
+
+        double ratio = rssi * 1.0 / txPower;
+        if (ratio < 1.0) {
+            return Math.pow(ratio, 10);
         } else {
-            distanciavalue.setText("Lejos");
-        }*/
+            double distance = (0.89976) * Math.pow(ratio, 7.7095) + 0.111;
+            return distance;
+        }
+    }
+
+    // 显示距离的方法 Cómo mostrar la distancia
+    private void mostrarDistancia(double distancia) {
+        // 将距离显示在 distanciavalue 的 TextView 上    Mostrar distancia en TextView de distanciavalue
+        if (distancia < 2) {
+            dis.setText("Estas al lado del sensor");
+
+        } else if (distancia >= 2 && distancia <= 5) {
+            dis.setText("Estas cerca del sensor");
+        } else if (distancia > 5) {
+            dis.setText("Estas lejos");
+        }
+        //dis.setText(String.valueOf("%.2f",distancia)+" metreos");
 
     }
 
@@ -460,6 +487,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        notificationManager = (NotificationManager)
+                getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    CANAL_ID, "Servicio de Música",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("Descripcion del canal");
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
         sesionManager = new SesionManager(this);
 
         // Inicializa la cola de solicitudes de Volley para realizar peticiones HTTP.
@@ -474,8 +511,22 @@ public class MainActivity extends AppCompatActivity {
 
         // Asigna los TextView de la interfaz a las variables co2 y temp.
         co2 = findViewById(R.id.CO2); //
-        temp =findViewById(R.id.Temp);
-        medicionesRandoms();
+        temp = findViewById(R.id.Temp);
+        dis = findViewById(R.id.textView11);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            // Logic to handle location object
+                        }
+                    }
+                });
 
 
         //alerta cuando cambia el textView de co2
@@ -502,21 +553,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void lanzarLogin(View view) {
 
-        if (sesionManager.SesionIniciada()){
+        if (sesionManager.SesionIniciada()) {
             try {
-                startActivity(new Intent(this, Perfil.class));
-            }
-            catch (Exception e){
+                startActivity(new Intent(this, Mapa.class));
+            } catch (Exception e) {
                 Log.d("TAG", e.toString());
             }
-        }
-        else
+        } else
             try {
                 startActivity(new Intent(this, LoginActivity.class));
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.d("TAG", e.toString());
             }
+    }
+
+    public void lanzarMapa(View view) {
+        Intent intent = new Intent(this, MapaPublico.class);
+        startActivity(intent);
     }
 
     public void onInformacion(View view) {
@@ -529,7 +582,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, RegisterActivity.class));
     }
 
-    public void lanzarScanner(View view){
+    public void lanzarScanner(View view) {
         // Ejemplo utilizando ZXing
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
@@ -547,17 +600,83 @@ public class MainActivity extends AppCompatActivity {
                 String qrData = result.getContents();
                 // Process the scanned QR code data
                 // ...
-                Log.e("escaneo correcto",qrData);
+                Log.e("escaneo correcto", qrData);
                 botonBuscarNuestroDispositivoBTLEPulsadoV2(qrData);
             } else {
                 // Handle the case where scanning was canceled or failed
                 // ...
-                Log.e("escaneo correcto","MAAAAAAAL");
+                Log.e("escaneo correcto", "MAAAAAAAL");
 
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    public void lanzarNoti(int caso) {
+        if (caso == 1) {
+            NotificationHelper.mostrarNotificacion(this, "Alerta", "El nivel de riesgo de calidad del aire es moderado");
+        } else {
+            NotificationHelper.mostrarNotificacion(this, "Alerta", "El nivel de riesgo de calidad del aire es alto");
+        }
+    }
+
+    public void mainPage(View view) {
+        startActivity(new Intent(this, Mapa.class));
+    }
+
+    public void generar(View view) {
+        Log.d("pelochas", "hola");
+
+        Random random = new Random();
+
+        // Array de correos electrónicos
+        String[] correos = {"alba@gmail.com", "alex@gmail.com", "eduard01kate@gmail.com", "pepe@gmail.com"};
+
+        for (int i = 1; i <= 20; i++) {
+
+            LocalDateTime fechaEspecifica = LocalDateTime.of(2023, 12, 14, 0, 0, 0);
+            fechaEspecifica = fechaEspecifica.plusHours(i);
+
+            // Definir un formato de fecha y hora
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            // Convertir LocalDateTime a String
+            String fechaComoString = fechaEspecifica.format(formatter);
+            Log.d("pelochas", "fecha generar: " + fechaComoString);
+
+            int numeroAleatorio = random.nextInt(4) + 2; // Generar número aleatorio entre 2 y 5
+            int numeroAleatorio2  = random.nextInt(301);
+            int numeroAleatorio3 = random.nextInt(3) + 1;
+            double latitud = 38.99610528500254000000;
+            double longitud = -0.16569078810570842000;
+
+            double variacionLatitud = Math.random() * 0.02 - 0.01; // Variación de +/- 0.01 para la latitud
+            double variacionLongitud = Math.random() * 0.02 - 0.01;
+
+            double latitudNueva = latitud + variacionLatitud;
+            double longitudNueva = longitud + variacionLongitud;
+
+            String emailAleatorio = correos[random.nextInt(correos.length)]; // Seleccionar un email aleatorio
+            Log.d("Pelochas",emailAleatorio);
+
+           Server.guardarMedicion(fechaComoString, String.valueOf(latitudNueva), String.valueOf(longitudNueva), String.valueOf(numeroAleatorio2), String.valueOf(numeroAleatorio3), requestQueue, new MedicionRecuperadoListener() {
+                @Override
+                public void medicionGuardada() {
+                    Server.setUltimaMedicionListener(new UltimaMedicionRecuperadoListener() {
+                        @Override
+                        public void onUltimaMedicionListener() {
+                            Server.guardarSondaMedidion(requestQueue, String.valueOf(numeroAleatorio), Server.idmedicion); // Usar el número aleatorio en lugar de Server.sonda
+                            Server.guardarUsuarioMedicion(requestQueue, emailAleatorio, Server.idmedicion);
+                        }
+                    });
+                    Server.recuperarUltimaMedicion(requestQueue);
+
+                }
+            });
+        }
+    }
+
+
 
 }

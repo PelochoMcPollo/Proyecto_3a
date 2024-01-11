@@ -7,10 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-
-
-
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+
 
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
@@ -22,6 +20,10 @@
         android:roundIcon="@drawable/logo_sinnombre"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".MainActivity"
@@ -45,8 +47,10 @@
         </activity>
         <activity android:name=".LoginActivity"
             android:theme="@style/Theme.Proyecto_3a"/>
+
         <activity android:name=".Perfil"
             android:theme="@style/Theme.Proyecto_3a"/>
+
 
         <activity
             android:name=".RegisterActivity"
@@ -65,8 +69,10 @@
 
         <activity android:name=".EditarPerfil"
             android:theme="@style/Theme.Proyecto_3a"/>
+
         <activity android:name=".CambiarContrasenya"
             android:theme="@style/Theme.Proyecto_3a"/>
+
         <activity android:name=".EnviarMailContrasenya"
             android:theme="@style/Theme.Proyecto_3a"/>
 
@@ -78,6 +84,13 @@
             android:name=".CodigoContrasenya"
             android:theme="@style/Theme.Proyecto_3a"/>
 
+        <activity android:name=".VerificarActivity"
+            android:theme="@style/Theme.Proyecto_3a"/>
+
+        <activity android:name=".Mapa"
+            android:theme="@style/Theme.Proyecto_3a"/>
+        <activity android:name=".MapaPublico"
+            android:theme="@style/Theme.Proyecto_3a"/>
     </application>
 
 </manifest>

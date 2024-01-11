@@ -8,14 +8,17 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,17 +44,25 @@ public class Server {
     private  static  final  String UrlGuardarSonda = "http://"+ip+"/BiometriaBackendd/src/api/guardarsonda.php";
     private  static  final  String UrlGuardarUsuarioSonda = "http://"+ip+"/BiometriaBackendd/src/api/guardarusuariosonda.php?";
     private  static  final  String UrlRecuperarSonda = "http://"+ip+"/BiometriaBackendd/src/api/recuperarsonda.php?email=";
+    private  static  final  String UrlRecuperarUltimaMedicion = "http://"+ip+"/BiometriaBackendd/src/api/recuperarultimamedicion.php?";
     private  static  final  String UrlGuardarSondaMedicion = "http://"+ip+"/BiometriaBackendd/src/api/guardarsondamedicion.php";
-    private  static  final  String UrlRecupearUsuarioMedicion = "http://"+ip+"/BiometriaBackendd/src/api/recuperarusuariomedicion.php";
-    private static  final  String UrlGuardarUsuarioMedicion = "http://"+ip+"/BiometriaBackendd/src/api/guardarusuariomedicion.php";
+    private  static  final  String UrlRecupearUsuarioMedicion = "http://"+ip+"/BiometriaBackendd/src/api/recuperarusuariomedicion.php?email=";
+    private static  final  String UrlGuardarUsuarioMedicion = "http://"+ip+"/BiometriaBackendd/src/api/guardarusuariomedicion.php?";
+    private  static  final  String UrlRecuperarMedicionesTodas = "http://"+ip+"/BiometriaBackendd/src/api/recuperartodasmediciones.php";
+    private static final String UrlRecuperarMedicionesUsuario = "http://"+ip+"/BiometriaBackendd/src/api/recuperartodasmedicionesusuario.php?email=";
 
     private static String nombre,contrasenya,telefono,email;
     public static String  sonda,idmedicion;
+
+    private static ArrayList<Medicion>  medicionesTodas = new ArrayList<>();
 
     private  static  UsuarioRecuperadoListener usuarioRecuperadoListener;
     private  static  TelefonoRecuperadoListener telefonoRecuperadoListener;
     private  static  SondaRecuperadoListener sondaRecuperadoListener;
     private  static  UsuarioMeidicionRecuperadoListener usuarioMeidicionRecuperadoListener;
+    private static MedicionesTodasRecuperadoListener medicionesTodasRecuperadoListener;
+    private static MedicionesUsuarioRecuperadoListener medicionesUsuarioRecuperadoListener;
+    private  static  UltimaMedicionRecuperadoListener ultimaMedicionRecuperadoListener;
 
 
 
@@ -155,7 +166,7 @@ public class Server {
                 Map <String, String> params = new HashMap<>();
                 // Se definen los parámetros a enviar en la solicitud (nivel de CO2 y temperatura).
                 params.put("email", email);
-                params.put("v", idmedicion);
+                params.put("idmedicion", idmedicion);
                 return params;
             }
         };
@@ -176,7 +187,7 @@ public class Server {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Pelochas", error.toString());
+                        Log.d("Pelochas1", error.toString());
                     }
                 }
         ){
@@ -349,10 +360,11 @@ public class Server {
                         try
                         {
                             idmedicion = response.getString("idmedicion");
-                            if(telefonoRecuperadoListener != null)
+                            if(usuarioMeidicionRecuperadoListener != null)
                             {
-                                telefonoRecuperadoListener.onTelefonoRecuperado();
+                                usuarioMeidicionRecuperadoListener.onUsuarioMedicionListener();
                             }
+
                         }
                         catch (JSONException e)
                         {
@@ -367,6 +379,43 @@ public class Server {
                     }
                 }
         );
+
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
+
+    public  static  void recuperarUltimaMedicion(RequestQueue requestQueue){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,    // Método HTTP (POST).
+                UrlRecuperarUltimaMedicion,                   // URL del servidor.
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try
+                        {
+                            idmedicion = response.getString("idmedicion");
+                            if(ultimaMedicionRecuperadoListener != null)
+                            {
+                                ultimaMedicionRecuperadoListener.onUltimaMedicionListener();
+                            }
+
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+
         requestQueue.add(jsonObjectRequest);
 
     }
@@ -404,6 +453,104 @@ public class Server {
 
     }
 
+
+    public static void recuperarMedicionesTodas(RequestQueue requestQueue) {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,    // Método HTTP (GET).
+                UrlRecuperarMedicionesTodas,  // URL del servidor.
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            // Crear un array de mediciones para almacenar los datos recuperados
+                            ArrayList<Medicion> mediciones = new ArrayList<>();
+
+                            // Iterar sobre cada objeto en el JSONArray de respuesta
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject medicionObj = response.getJSONObject(i);
+
+                                // Aquí debes parsear cada objeto JSON y crear una instancia de "Medicion"
+                                // Supongamos que tienes una clase Medicion con campos como "id", "valor", "fecha", etc.
+                                String idMedicion = medicionObj.getString("idmedicion");
+                                String instante = medicionObj.getString("instante");
+                                String latitud = medicionObj.getString("latitud");
+                                String longitud = medicionObj.getString("longitud");
+                                String valor = medicionObj.getString("valor");
+                                String idContaminante = medicionObj.getString("idcontaminante");
+
+
+                                // Crea una instancia de Medicion y agrega a la lista de mediciones
+                                Medicion medicion = new Medicion(idMedicion, instante, latitud, longitud, valor, idContaminante);
+                                mediciones.add(medicion);
+                            }
+
+                            // Una vez que se han recopilado todas las mediciones, notifica al listener, si existe
+                            if (medicionesTodasRecuperadoListener != null) {
+                                medicionesTodasRecuperadoListener.onMedicionesTodasRecuperado(mediciones);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Manejar errores de solicitud
+                    }
+                }
+        );
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public static void recuperarMedicionesUsuario(RequestQueue requestQueue, String correo) {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,    // Método HTTP (GET).
+                UrlRecuperarMedicionesUsuario.concat(correo),  // URL del servidor.
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            // Crear un array de mediciones para almacenar los datos recuperados
+                            ArrayList<Medicion> mediciones = new ArrayList<>();
+
+                            // Iterar sobre cada objeto en el JSONArray de respuesta
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject medicionObj = response.getJSONObject(i);
+
+                                // Aquí debes parsear cada objeto JSON y crear una instancia de "Medicion"
+                                // Supongamos que tienes una clase Medicion con campos como "id", "valor", "fecha", etc.
+                                String idMedicion = medicionObj.getString("idmedicion");
+                                String instante = medicionObj.getString("instante");
+                                String latitud = medicionObj.getString("latitud");
+                                String longitud = medicionObj.getString("longitud");
+                                String valor = medicionObj.getString("valor");
+                                String idContaminante = medicionObj.getString("idcontaminante");
+
+                                // Crea una instancia de Medicion y agrega a la lista de mediciones
+                                Medicion medicion = new Medicion(idMedicion, instante, latitud, longitud, valor, idContaminante);
+                                mediciones.add(medicion);
+                            }
+                            // Una vez que se han recopilado todas las mediciones, notifica al listener, si existe
+                            if (medicionesUsuarioRecuperadoListener != null) {
+                                medicionesUsuarioRecuperadoListener.onMedicionesUsuarioRecuperado(mediciones);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Manejar errores de solicitud
+                    }
+                }
+        );
+        requestQueue.add(jsonArrayRequest);
+    }
 
     /**
      *
@@ -581,9 +728,10 @@ public class Server {
         Server.recuperarUsuario(requestQueue,correo);
         Server.recuperarTelefono(requestQueue,correo);
 
-
-
     }
+
+
+
 
     public static void setUsuarioRecuperadoListener(UsuarioRecuperadoListener listener) {
         usuarioRecuperadoListener = listener;
@@ -598,6 +746,17 @@ public class Server {
     public  static  void setUsuarioMedicionListener(UsuarioMeidicionRecuperadoListener listener)
     {
         usuarioMeidicionRecuperadoListener = listener;
+    }
+
+    public static void setMedicionesTodasRecuperadoListener(MedicionesTodasRecuperadoListener listener){
+         medicionesTodasRecuperadoListener = listener;
+    }
+
+    public static void setMedicionesUsuarioRecuperadoListener(MedicionesUsuarioRecuperadoListener listener){
+        medicionesUsuarioRecuperadoListener = listener;
+    }
+    public  static  void  setUltimaMedicionListener(UltimaMedicionRecuperadoListener listener){
+        ultimaMedicionRecuperadoListener = listener;
     }
 
     /**

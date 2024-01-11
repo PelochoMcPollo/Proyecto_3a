@@ -12,113 +12,113 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/blueBox1"
-        android:layout_width="346dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="64dp"
-        app:cardBackgroundColor="#a6cde4"
-        app:cardCornerRadius="25dp"
-        app:cardElevation="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/blueBox2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="16dp" >
-
-
-        <View
-            android:layout_width="335dp"
-            android:layout_height="290dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/blueBox1"
+            android:layout_width="346dp"
+            android:layout_height="300dp"
             android:layout_gravity="center"
-            android:background="@drawable/rounded_corner" />
-
-        <ImageView
-            android:id="@+id/xiao1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="170dp"
-            android:elevation="10dp"
-
-            app:srcCompat="@drawable/contento_verde" />
-
-        <ImageView
-            android:id="@+id/zhong1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="200dp"
-            android:elevation="10dp"
-
-            app:srcCompat="@drawable/medio" />
-
-        <ImageView
-            android:id="@+id/ku1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="230dp"
-            android:elevation="10dp"
-
-            app:srcCompat="@drawable/triste_naranja" />
-
-        <ImageView
-            android:id="@+id/kumax1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="260dp"
-            android:elevation="10dp"
-
-            app:srcCompat="@drawable/triste_max_rojo" />
+            android:layout_marginTop="64dp"
+            app:cardBackgroundColor="#a6cde4"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/blueBox2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="16dp" >
 
 
-        <TextView
+            <View
+                android:layout_width="335dp"
+                android:layout_height="290dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rounded_corner" />
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="170dp"
+            <ImageView
+                android:id="@+id/xiao1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="170dp"
+                android:elevation="10dp"
 
-            android:text="Bajo Nivel (Normal): 0 a 10 μg/m³" />
+                app:srcCompat="@drawable/contento_verde" />
 
-        <TextView
+            <ImageView
+                android:id="@+id/zhong1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="200dp"
+                android:elevation="10dp"
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="200dp"
+                app:srcCompat="@drawable/medio" />
 
-            android:text="Nivel Moderado (Aceptable): 10 a 20 μg/m³" />
+            <ImageView
+                android:id="@+id/ku1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="230dp"
+                android:elevation="10dp"
 
-        <TextView
+                app:srcCompat="@drawable/triste_naranja" />
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="230dp"
+            <ImageView
+                android:id="@+id/kumax1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="260dp"
+                android:elevation="10dp"
 
-            android:text="Nivel Alto (Preocupante): 20 a 25 μg/m³" />
-
-        <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="260dp"
-
-            android:text="Nivel Muy Alto (Peligroso): Más de 25 μg/m³" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="top" />
+                app:srcCompat="@drawable/triste_max_rojo" />
 
 
-    </androidx.cardview.widget.CardView>
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="170dp"
+
+                android:text="Bajo Nivel (Normal): 0 a 10 μg/m³" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="200dp"
+
+                android:text="Nivel Moderado (Aceptable): 10 a 20 μg/m³" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="230dp"
+
+                android:text="Nivel Alto (Preocupante): 20 a 25 μg/m³" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="260dp"
+
+                android:text="Nivel Muy Alto (Peligroso): Más de 25 μg/m³" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top" />
+
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager1"
@@ -246,100 +246,100 @@
             app:layout_constraintStart_toStartOf="@+id/blueBox2"
             app:layout_constraintTop_toTopOf="@+id/blueBox2" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/blueBox3"
-        android:layout_width="346dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center"
-        app:cardBackgroundColor="#a6cde4"
-        app:cardCornerRadius="25dp"
-        app:cardElevation="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/blueBox4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blueBox2"
-        android:layout_marginBottom="16dp" >
-
-        <View
-            android:layout_width="335dp"
-            android:layout_height="290dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/blueBox3"
+            android:layout_width="346dp"
+            android:layout_height="300dp"
             android:layout_gravity="center"
-            android:background="@drawable/rounded_corner" />
+            app:cardBackgroundColor="#a6cde4"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/blueBox4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blueBox2"
+            android:layout_marginBottom="16dp" >
 
-        <ImageView
-            android:id="@+id/xiao3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="170dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/contento_verde" />
+            <View
+                android:layout_width="335dp"
+                android:layout_height="290dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rounded_corner" />
 
-        <ImageView
-            android:id="@+id/zhong3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="200dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/medio" />
+            <ImageView
+                android:id="@+id/xiao3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="170dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/contento_verde" />
 
-        <ImageView
-            android:id="@+id/ku3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="230dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/triste_naranja" />
+            <ImageView
+                android:id="@+id/zhong3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="200dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/medio" />
 
-        <ImageView
-            android:id="@+id/kumax3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="260dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/triste_max_rojo" />
+            <ImageView
+                android:id="@+id/ku3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="230dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/triste_naranja" />
+
+            <ImageView
+                android:id="@+id/kumax3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="260dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/triste_max_rojo" />
 
 
-        <TextView
+            <TextView
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="170dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="170dp"
 
-            android:text="Nivel Bajo de CO2 (Menos de 600 ppm)" />
+                android:text="Nivel Bajo de CO2 (Menos de 600 ppm)" />
 
-        <TextView
+            <TextView
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="200dp"
 
-            android:text="Nivel Moderado de CO2 (600 a 800 ppm)" />
+                android:text="Nivel Moderado de CO2 (600 a 800 ppm)" />
 
-        <TextView
+            <TextView
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="230dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="230dp"
 
-            android:text="Nivel Alto de CO2 (800 a 1,000 ppm)" />
+                android:text="Nivel Alto de CO2 (800 a 1,000 ppm)" />
 
-        <TextView
+            <TextView
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="260dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="260dp"
 
-            android:text="Nivel Muy Alto de CO2 (Más de 1,000 ppm)" />
-    </androidx.cardview.widget.CardView>
+                android:text="Nivel Muy Alto de CO2 (Más de 1,000 ppm)" />
+        </androidx.cardview.widget.CardView>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager3"
@@ -468,60 +468,60 @@
 
 
         <androidx.cardview.widget.CardView
-        android:id="@+id/blueBox5"
-        android:layout_width="346dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center"
-        app:cardBackgroundColor="#a6cde4"
-        app:cardCornerRadius="25dp"
-        app:cardElevation="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blueBox4"
-        android:layout_marginBottom="16dp" >
-
-        <View
-            android:layout_width="335dp"
-            android:layout_height="290dp"
+            android:id="@+id/blueBox5"
+            android:layout_width="346dp"
+            android:layout_height="300dp"
             android:layout_gravity="center"
-            android:background="@drawable/rounded_corner" />
-        <ImageView
-            android:id="@+id/xiao5"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="170dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/contento_verde" />
+            app:cardBackgroundColor="#a6cde4"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blueBox4"
+            android:layout_marginBottom="16dp" >
 
-        <ImageView
-            android:id="@+id/zhong5"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="200dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/medio" />
+            <View
+                android:layout_width="335dp"
+                android:layout_height="290dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rounded_corner" />
+            <ImageView
+                android:id="@+id/xiao5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="170dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/contento_verde" />
 
-        <ImageView
-            android:id="@+id/ku5"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="230dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/triste_naranja" />
+            <ImageView
+                android:id="@+id/zhong5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="200dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/medio" />
 
-        <ImageView
-            android:id="@+id/kumax5"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="260dp"
-            android:elevation="10dp"
-            app:srcCompat="@drawable/triste_max_rojo" />
+            <ImageView
+                android:id="@+id/ku5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="230dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/triste_naranja" />
+
+            <ImageView
+                android:id="@+id/kumax5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="260dp"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/triste_max_rojo" />
 
 
             <TextView
@@ -559,7 +559,7 @@
                 android:layout_marginTop="260dp"
 
                 android:text="Nivel Muy Alto (Más de 180 µg/m³)" />
-    </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager5"
@@ -598,16 +598,16 @@
             app:layout_constraintTop_toTopOf="@+id/blueBox2"
             app:srcCompat="@drawable/so2" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="@+id/blueBox3"
-        app:layout_constraintTop_toTopOf="@+id/blueBox3"
-        app:srcCompat="@drawable/co2"
-        android:elevation="10dp"/>
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toStartOf="@+id/blueBox3"
+            app:layout_constraintTop_toTopOf="@+id/blueBox3"
+            app:srcCompat="@drawable/co2"
+            android:elevation="10dp"/>
 
         <ImageView
             android:id="@+id/imageView4"
@@ -620,47 +620,47 @@
             app:layout_constraintTop_toTopOf="@+id/blueBox4"
             app:srcCompat="@drawable/no2" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="@+id/blueBox5"
-        app:layout_constraintTop_toTopOf="@+id/blueBox5"
-        app:srcCompat="@drawable/o3"
-        android:elevation="10dp"/>
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toStartOf="@+id/blueBox5"
+            app:layout_constraintTop_toTopOf="@+id/blueBox5"
+            app:srcCompat="@drawable/o3"
+            android:elevation="10dp"/>
 
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="15dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="@+id/textView2"
-        app:srcCompat="@drawable/ditu" />
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="15dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            app:srcCompat="@drawable/ditu" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Carrer del Paranimf,Gandia,Valencia"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Carrer del Paranimf,Gandia,Valencia"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="32dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/opciones" />
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="32dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/opciones" />
 
         <androidx.constraintlayout.widget.Barrier
             android:layout_width="wrap_content"
