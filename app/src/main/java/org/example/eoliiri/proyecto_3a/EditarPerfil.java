@@ -1,5 +1,6 @@
 package org.example.eoliiri.proyecto_3a;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -7,11 +8,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -26,12 +31,16 @@ public class EditarPerfil extends AppCompatActivity {
     String nombreguardar, telefonoguardar, emailguardar;  // Variables para guardar los valores editados
     Button guardar;  // Botón para guardar los cambios
 
+    Toolbar toolbar;
     private SesionManager sesionManager;  // Maneja la información de la sesión del usuario
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editar_perfil);  // Establece la vista de la actividad
+        toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         sesionManager = new SesionManager(this);  // Inicializa el gestor de sesión
         requestQueue = Volley.newRequestQueue(this);  // Inicializa la cola de solicitudes para Volley
         nombre = findViewById(R.id.nombre);  // Obtiene la referencia al campo de nombre desde la vista
@@ -40,6 +49,7 @@ public class EditarPerfil extends AppCompatActivity {
         Server.modificarTextos(requestQueue, nombre, telefono, email, sesionManager.getEmail());  // Carga los datos del perfil del usuario en la interfaz de usuario
         guardar = findViewById(R.id.botonguardar);  // Obtiene la referencia al botón "Guardar" desde la vista
         Log.d("Hola",sesionManager.getEmail());
+
     }
 
     public void guardar(View v) {
@@ -82,4 +92,36 @@ public class EditarPerfil extends AppCompatActivity {
         startActivity(new Intent(EditarPerfil.this, CambiarContrasenya.class));
         finish();
     }
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.acercaDe) {
+            //lanzarAcercaDe(null);
+            return true;
+        }
+        if (id == R.id.menu_perfil) {
+            lanzarEditarPerfil(null);
+            return true;
+        }
+        if(id == R.id.descubrir){
+            lanzarEditarDescubrir(null);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    public void lanzarEditarDescubrir(View view){
+        Intent i = new Intent(this,informacion.class);
+        startActivity(i);
+    }
+
+    public void lanzarEditarPerfil(View view){
+        Intent i = new Intent(this,EditarPerfil.class);
+        startActivity(i);
+    }
+
 }

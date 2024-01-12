@@ -16,7 +16,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline">
 
+
     </LinearLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <ImageView
         android:id="@+id/imageView21"
@@ -71,40 +82,14 @@
         app:layout_constraintBottom_toBottomOf="@+id/calidadAire"
         app:layout_constraintStart_toEndOf="@+id/calidadAire" />
 
-    <TextView
-        android:id="@+id/contaminante"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:shadowColor="#393535"
-        android:shadowDx="-3"
-        android:shadowRadius="5"
-        android:text="CO2"
-        android:textColor="#000000"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ubicacionSonda" />
-
-    <TextView
-        android:id="@+id/ubicacionSonda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:text="Carrer del Paranimf, Gandia, Valencia"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/iconoMarcador"
         android:layout_width="15dp"
         android:layout_height="20dp"
-        android:layout_marginStart="7dp"
         app:layout_constraintBottom_toBottomOf="@+id/ubicacionSonda"
+        app:layout_constraintEnd_toStartOf="@+id/puntosMenu"
         app:layout_constraintStart_toEndOf="@+id/ubicacionSonda"
+        app:layout_constraintTop_toTopOf="@+id/ubicacionSonda"
         app:srcCompat="@drawable/ditu" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -118,9 +103,7 @@
         android:id="@+id/puntosMenu"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ubicacionSonda"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/valorTemp"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/opciones" />
 
@@ -129,14 +112,13 @@
         android:layout_width="70dp"
         android:layout_height="75dp"
         android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/nivelRiesgo"
+        app:layout_constraintBottom_toTopOf="@+id/ubicacionSonda"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ubicacionSonda"
         app:srcCompat="@android:drawable/btn_dialog" />
 
     <TextView
-        android:id="@+id/nivelRiesgo"
+        android:id="@+id/ubicacionSonda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -148,20 +130,6 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/descripcionAlerta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:fontFamily="@font/roboto_light"
-        android:text="La concentración de &quot;contaminante&quot; \n en el ambiente es &quot;null&quot; hoy."
-        android:textColor="#2E2E2E"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/nivelRiesgo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emoticono" />
 
     <TextView
         android:id="@+id/hoy"
@@ -181,27 +149,12 @@
         app:layout_constraintEnd_toStartOf="@+id/calidadAire"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-    <TextView
-        android:id="@+id/valorTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:shadowColor="#434242"
-        android:shadowDx="3"
-        android:shadowRadius="4"
-        android:text="20º"
-        android:textColor="#000000"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/nivelRiesgo"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <ImageView
         android:id="@+id/MapaGrafica"
         android:layout_width="42dp"
         android:layout_height="47dp"
         android:layout_marginStart="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/nivelRiesgo"
+        app:layout_constraintBottom_toBottomOf="@+id/ubicacionSonda"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/mapa" />
 
@@ -305,10 +258,10 @@
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/nivelRiesgo"
+        app:layout_constraintBottom_toTopOf="@+id/ubicacionSonda"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emoticono"
         tools:ignore="MissingClass,MissingConstraints" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

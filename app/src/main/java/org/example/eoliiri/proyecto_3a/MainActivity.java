@@ -690,7 +690,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.menu_perfil) {
-            //lanzarEditarPerfil(null);
+            lanzarEditarPerfil(null);
             return true;
         }
         if(id == R.id.descubrir){
@@ -710,6 +710,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void lanzarEditarPerfil(View view){
+        Intent i = new Intent(this,EditarPerfil.class);
+        startActivity(i);
+    }
 
 
 }

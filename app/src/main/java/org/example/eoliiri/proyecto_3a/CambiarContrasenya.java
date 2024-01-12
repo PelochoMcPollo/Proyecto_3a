@@ -3,6 +3,9 @@ package org.example.eoliiri.proyecto_3a;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -28,6 +32,8 @@ public class CambiarContrasenya extends AppCompatActivity {
         inputcontrasenyaactual = (TextInputLayout) findViewById(R.id.contrasenyaactual);
         inputnuevacontrasenya = (TextInputLayout) findViewById(R.id.nuevacontrasenya);
         inputconfirmarcontrasenya = (TextInputLayout) findViewById(R.id.confirmcontrasenya);
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     public void  guardar(View view){
@@ -98,4 +104,36 @@ public class CambiarContrasenya extends AppCompatActivity {
         }
         return s;
     }
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.acercaDe) {
+            //lanzarAcercaDe(null);
+            return true;
+        }
+        if (id == R.id.menu_perfil) {
+            lanzarEditarPerfil(null);
+            return true;
+        }
+        if(id == R.id.descubrir){
+            lanzarEditarDescubrir(null);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    public void lanzarEditarDescubrir(View view){
+        Intent i = new Intent(this,informacion.class);
+        startActivity(i);
+    }
+
+    public void lanzarEditarPerfil(View view){
+        Intent i = new Intent(this,EditarPerfil.class);
+        startActivity(i);
+    }
+
 }

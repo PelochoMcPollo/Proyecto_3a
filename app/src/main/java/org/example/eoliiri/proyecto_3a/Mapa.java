@@ -2,6 +2,7 @@ package org.example.eoliiri.proyecto_3a;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,8 +20,9 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -38,7 +40,7 @@ import android.os.Handler;
 
 import java.util.ArrayList;
 
-public class Mapa extends FragmentActivity implements OnMapReadyCallback {
+public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mapa;
     private ArrayList<Medicion> listaMediciones;
@@ -50,11 +52,14 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
 
     Switch baja, media, alta;
     Spinner spinner;
-    ImageView menu;
+    ImageView menu,co2Image,emoticono;
     String[] opciones = {"Co2", "Ozono"};
+    Toolbar toolbar;
     RequestQueue requestQueue; // Cola de solicitudes para comunicación con el servidor.
     //private final LatLng EPSG = new LatLng(38.99611917166694, -0.16607561670145485);
+    HorizontalProgressBar progressBar;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +73,11 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         media = findViewById(R.id.switch2);
         alta = findViewById(R.id.switch3);
         spinner = findViewById(R.id.spinner);
+        toolbar = findViewById(R.id.toolbar);
+        co2Image=findViewById(R.id.colorCo2);
+        emoticono=findViewById(R.id.emoticono);
+        setSupportActionBar(toolbar);
+
         handler.postDelayed(ppmRunnable = new Runnable() {
             public void run() {
                 // Llamar a la función Ppm para actualizar el TextView cada 40 segundos
@@ -79,29 +89,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         }, 0);
 
         menu = findViewById(R.id.puntosMenu);
-        menu.setOnClickListener(v -> {
-            PopupMenu popup = new PopupMenu(this, v);
-            MenuInflater inflater = popup.getMenuInflater();
-            inflater.inflate(R.menu.menu_perfil, popup.getMenu());
 
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.option1:
-                        lanzarMasInfo(null);
-                        return true;
-                    case R.id.option2:
-                        lanzarEditar(null);
-                        return true;
-                    case R.id.option3:
-                        cerrarSesion(null);
-                        return true;
-                    default:
-                        return false;
-                }
-            });
-
-            popup.show();
-        });
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, opciones);
         spinner.setAdapter(adapter);
 
@@ -287,6 +275,18 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
                     @Override
                     public void medicionGuardada() {
                         ppm.setText(Server.valor);
+                        progressBar.setProgress(Integer.parseInt(Server.valor));
+                        if (Integer.parseInt(Server.valor)< 400) {
+                            co2Image.setImageResource(R.drawable.verde);
+                            emoticono.setImageResource(R.drawable.contento_verde);
+                        } else if (Integer.parseInt(Server.valor)>= 400 && Integer.parseInt(Server.valor) <= 1000) { // Corregido para incluir valores entre 400 y 1000
+                            co2Image.setImageResource(R.drawable.amarillo);
+                            emoticono.setImageResource(R.drawable.emoti_2);
+                        } else if (Integer.parseInt(Server.valor) >= 1000) {
+                            co2Image.setImageResource(R.drawable.rojo);
+                            emoticono.setImageResource(R.drawable.triste_max_rojo);
+                        }
+
                     }
                 });
                 Server.recuperarMedicion(requestQueue,Server.idmedicion);
@@ -301,5 +301,41 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         handler.removeCallbacks(ppmRunnable);
         super.onDestroy();
     }
+    //---------------------------------------
+    //---------------toolbar----------------
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.acercaDe) {
+            //lanzarAcercaDe(null);
+            return true;
+        }
+        if (id == R.id.menu_perfil) {
+            lanzarEditarPerfil(null);
+            return true;
+        }
+        if(id == R.id.descubrir){
+            lanzarEditarDescubrir(null);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    public void lanzarEditarDescubrir(View view){
+        Intent i = new Intent(this,informacion.class);
+        startActivity(i);
+    }
+
+    public void lanzarEditarPerfil(View view){
+        Intent i = new Intent(this,EditarPerfil.class);
+        startActivity(i);
+    }
+
+
 }
 
