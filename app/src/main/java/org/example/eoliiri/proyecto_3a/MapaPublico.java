@@ -32,6 +32,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.heatmaps.Gradient;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.google.maps.android.heatmaps.WeightedLatLng;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -121,10 +126,7 @@ public class MapaPublico extends FragmentActivity implements OnMapReadyCallback 
             public void onMedicionesTodasRecuperado(ArrayList<Medicion> mediciones) {
                 listaMediciones = mediciones;
                 ArrayList<Medicion> med = comprobarRiesgo(mediciones);
-                for (Medicion medicion : med) {
-                    Log.d("tag", medicion.toString());
-                    pintarCirculosEnMapa(medicion);
-                }
+                pintarMapaDeCalor(med);
                 centrarMapa(mediciones);
                 callback.onRecibirMediciones(mediciones); // Notificar al callback
             }
@@ -193,9 +195,9 @@ public class MapaPublico extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private float decidirColor(int valor) {
-        if (valor <= 180) {
+        if (valor <= 121) {
             return BitmapDescriptorFactory.HUE_GREEN;
-        } else if (180 < valor && valor <= 240) {
+        } else if (121 < valor && valor <= 180) {
             return BitmapDescriptorFactory.HUE_YELLOW;
         } else {
             return BitmapDescriptorFactory.HUE_RED;
@@ -229,6 +231,53 @@ public class MapaPublico extends FragmentActivity implements OnMapReadyCallback 
                 .fillColor(color2));
     }
 
+    public void pintarMapaDeCalor(ArrayList<Medicion> mediciones) {
+        Log.d("TAG", "PINTAO");
+        ArrayList<WeightedLatLng> heatmapDataGreen = new ArrayList<>();
+        ArrayList<WeightedLatLng> heatmapDataYellow = new ArrayList<>();
+        ArrayList<WeightedLatLng> heatmapDataRed = new ArrayList<>();
+
+        for (Medicion medicion : mediciones) {
+            LatLng latLng = new LatLng(Double.parseDouble(medicion.getLatitud()), Double.parseDouble(medicion.getLongitud()));
+            WeightedLatLng weightedLatLng = new WeightedLatLng(latLng, Double.parseDouble(medicion.getValor()));
+            int valor = Integer.parseInt(medicion.getValor());
+            if (valor <= 121) {
+                heatmapDataGreen.add(weightedLatLng);
+            } else if (valor > 121 && valor <= 180) {
+                heatmapDataYellow.add(weightedLatLng);
+            } else if (valor > 180) {
+                heatmapDataRed.add(weightedLatLng);
+            }
+        }
+
+        if (heatmapDataRed.size() != 0) {
+            HeatmapTileProvider providerRed = new HeatmapTileProvider.Builder()
+                    .weightedData(heatmapDataRed)
+                    .gradient(new Gradient(new int[]{Color.RED, Color.RED}, new float[]{0.2f, 1f}))
+                    .radius(50)
+                    .build();
+            mapa.addTileOverlay(new TileOverlayOptions().tileProvider(providerRed));
+        }
+
+        if (heatmapDataYellow.size() != 0) {
+            HeatmapTileProvider providerYellow = new HeatmapTileProvider.Builder()
+                    .weightedData(heatmapDataYellow)
+                    .gradient(new Gradient(new int[]{Color.YELLOW, Color.YELLOW}, new float[]{0.2f, 1f}))
+                    .radius(50)
+                    .build();
+            mapa.addTileOverlay(new TileOverlayOptions().tileProvider(providerYellow));
+        }
+
+        if (heatmapDataGreen.size() != 0) {
+            HeatmapTileProvider providerGreen = new HeatmapTileProvider.Builder()
+                    .weightedData(heatmapDataGreen)
+                    .gradient(new Gradient(new int[]{Color.GREEN, Color.GREEN}, new float[]{0.2f, 1f}))
+                    .radius(50)
+                    .build();
+            mapa.addTileOverlay(new TileOverlayOptions().tileProvider(providerGreen));
+        }
+    }
+
     public ArrayList<Medicion> comprobarRiesgo(ArrayList<Medicion> mediciones) {
         if (!baja.isChecked() && !media.isChecked() && !alta.isChecked()) {
             // Ninguna opción está seleccionada, devolver la lista original sin filtrar
@@ -238,11 +287,11 @@ public class MapaPublico extends FragmentActivity implements OnMapReadyCallback 
         ArrayList<Medicion> res = new ArrayList<>();
         for (Medicion medicion : mediciones) {
             int valor = Integer.parseInt(medicion.getValor());
-            if (baja.isChecked() && valor <= 180) {
+            if (baja.isChecked() && valor <= 121) {
                 res.add(medicion);
-            } else if (media.isChecked() && valor > 180 && valor <= 240) {
+            } else if (media.isChecked() && valor > 121 && valor <= 180) {
                 res.add(medicion);
-            } else if (alta.isChecked() && valor > 240) {
+            } else if (alta.isChecked() && valor > 180) {
                 res.add(medicion);
             }
         }
@@ -268,11 +317,11 @@ public class MapaPublico extends FragmentActivity implements OnMapReadyCallback 
         ArrayList<Medicion> res = new ArrayList<>();
         for (Medicion medicion : mediciones) {
             int valor = Integer.parseInt(medicion.getValor());
-            if (baja.isChecked() && valor <= 180) {
+            if (baja.isChecked() && valor <= 121) {
                 res.add(medicion);
-            } else if (media.isChecked() && valor > 180 && valor <= 240) {
+            } else if (media.isChecked() && valor > 121 && valor <= 180) {
                 res.add(medicion);
-            } else if (alta.isChecked() && valor > 240) {
+            } else if (alta.isChecked() && valor > 180) {
                 res.add(medicion);
             }
         }
@@ -284,9 +333,7 @@ public class MapaPublico extends FragmentActivity implements OnMapReadyCallback 
         med = filterByValue(med);
         Log.d("tag", "ACTUALIZAO");
         mapa.clear();
-        for (Medicion medicion : med) {
-            pintarCirculosEnMapa(medicion);
-        }
+        pintarMapaDeCalor(med);
         obtenerDatosOficiales(requestQueue);
     }
 
