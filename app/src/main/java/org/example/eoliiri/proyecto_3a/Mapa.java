@@ -45,9 +45,7 @@ import java.util.ArrayList;
 public class Mapa extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mapa;
-    private ArrayList<Medicion> listaMediciones;
     private SesionManager sesionManager;
-    LatLng ultimopunto;
 
     Switch baja, media, alta;
     Spinner spinner;
@@ -142,7 +140,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
     }
 
     public void centrarMapa(ArrayList<Medicion> mediciones) {
-        Log.d("TAG", "CENTRAO");
+
         //ultimopunto = new LatLng(Double.parseDouble(mediciones.get(mediciones.size() - 1).getLatitud()), Double.parseDouble(mediciones.get(mediciones.size() - 1).getLongitud()));
         mapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mapa.getUiSettings().setZoomControlsEnabled(false);
@@ -153,6 +151,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         }
         LatLngBounds bounds = builder.build();
         mapa.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+        Log.d("TAG", "CENTRAO");
         //mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(ultimopunto, 13));
         //obtenerDatosOficiales(requestQueue);
     }
@@ -161,7 +160,6 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         Server.setMedicionesUsuarioRecuperadoListener(new MedicionesUsuarioRecuperadoListener() {
             @Override
             public void onMedicionesUsuarioRecuperado(ArrayList<Medicion> mediciones) {
-                listaMediciones = mediciones;
                 ArrayList<Medicion> med = comprobarRiesgo(mediciones);
                 for (Medicion medicion : med) {
                     Log.d("tag", medicion.toString());
