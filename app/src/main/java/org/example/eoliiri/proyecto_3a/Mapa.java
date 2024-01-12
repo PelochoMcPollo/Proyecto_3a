@@ -76,6 +76,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         toolbar = findViewById(R.id.toolbar);
         co2Image=findViewById(R.id.colorCo2);
         emoticono=findViewById(R.id.emoticono);
+        progressBar = findViewById(R.id.progressBar);
         setSupportActionBar(toolbar);
 
         handler.postDelayed(ppmRunnable = new Runnable() {
@@ -96,7 +97,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         setSwitchListener(baja, 1);
         setSwitchListener(media, 2);
         setSwitchListener(alta, 3);
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -112,6 +112,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
     }
 
     private void setSwitchListener(CompoundButton switchButton, int riskLevel) {
@@ -276,13 +277,13 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                     public void medicionGuardada() {
                         ppm.setText(Server.valor);
                         progressBar.setProgress(Integer.parseInt(Server.valor));
-                        if (Integer.parseInt(Server.valor)< 400) {
+                        if (Integer.parseInt(Server.valor)<  180) {
                             co2Image.setImageResource(R.drawable.verde);
                             emoticono.setImageResource(R.drawable.contento_verde);
-                        } else if (Integer.parseInt(Server.valor)>= 400 && Integer.parseInt(Server.valor) <= 1000) { // Corregido para incluir valores entre 400 y 1000
+                        } else if (Integer.parseInt(Server.valor)>= 180 && Integer.parseInt(Server.valor) <= 240) { // Corregido para incluir valores entre 400 y 1000
                             co2Image.setImageResource(R.drawable.amarillo);
                             emoticono.setImageResource(R.drawable.emoti_2);
-                        } else if (Integer.parseInt(Server.valor) >= 1000) {
+                        } else if (Integer.parseInt(Server.valor) >240) {
                             co2Image.setImageResource(R.drawable.rojo);
                             emoticono.setImageResource(R.drawable.triste_max_rojo);
                         }

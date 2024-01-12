@@ -22,7 +22,7 @@ public class HorizontalProgressBar extends View {
     private int inheightFix = 8; // Altura de contracción del bloque de color interno
 
 
-    private int max = 2150;
+    private int max = 600;
 
     public HorizontalProgressBar(Context context) {
         super(context);
@@ -38,9 +38,9 @@ public class HorizontalProgressBar extends View {
 
     public void setProgress(int progress) {
         this.progress = progress <=max ? progress:max;
-        if (progress<650){
+        if (progress<121){
             progressColor=Color.GREEN;
-        }else   if (progress>650&&progress<1500){
+        }else   if (progress>=120&&progress<=180){
             progressColor=Color.YELLOW;
         }else{
             progressColor=Color.RED;
@@ -106,10 +106,10 @@ public class HorizontalProgressBar extends View {
 
         for (int i = 0; i <= max; i += 10) {
             float x = i * (width-2*arcFix) / max;
-            if(i==650 || i==1500){
+            if(i==120 || i==180){
                 canvas.drawLine(x+arcFix, 0, x+arcFix, height, scalePaint);
             }
-            if(i==0 || i==max ||i==650 || i==1500 ) {
+            if(i==0 || i==max ||i==120 || i==180 ) {
 
                 // Dibujar el texto de la escala
 
